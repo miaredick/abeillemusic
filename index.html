@@ -309,6 +309,7 @@ form.f {
   .bar .btn { height: 40px; padding-inline: 0.9rem; font-size: 0.84rem; }
   .bar .bar__sound { width: 40px; padding: 0; }
   .hero__sub { font-size: var(--sc-t-sm); max-width: 30ch; }
+  .hero__name { letter-spacing: -0.045em; }
   .cue { display: none; }
   .fader button span { display: none; }
   .fader button[aria-current="true"] span { display: inline; position: absolute; top: -14px; white-space: nowrap; }
@@ -532,7 +533,7 @@ form.f {
   var NAME_SCALE = 1.0;
   var NAME_SHIFT = 0;     // source px, one-line layout only
   var NAME_BOTTOM = 498;  // source-pixel line the name sits on: clear of her head, still behind the towers
-  var NAME_BOTTOM_PHONE = 680;  // phones, in phone-video px: down in the skyline, same line as desktop (322 + 0.72 × 498)
+  var NAME_BOTTOM_PHONE = 640;  // phones, in phone-video px: down in the skyline, same line as desktop (322 + 0.72 × 498)
   // The hero is gone by 0.62 of the first leg, in whole-page progress.
   var HERO_END = 0.62 * W.segs[0].w / W.total;
   var heroOp = 1, soundOn = false, rect = { x: 0, y: 0, w: 0, h: 0, s: 1 };
@@ -549,14 +550,15 @@ form.f {
     sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Fit the name into the band of open sky: two lines on a phone, one wide.
-    var twoLines = vw / vh < 1.1;
+    var twoLines = vw / vh < 1.1 && nameEl.querySelectorAll('.l').length > 1;
     var fs = NAME_SCALE * (BAND_BOT - BAND_TOP) * s * K / ((twoLines ? 2 : 1) * 0.84);
     nameEl.style.fontSize = fs + 'px';
     var bw = 0;
     Array.prototype.forEach.call(twoLines ? nameEl.querySelectorAll('.l') : [nameEl], function (l) {
       var r = document.createRange(); r.selectNodeContents(l); bw = Math.max(bw, r.getBoundingClientRect().width);
     });
-    if (bw > vw * 0.94) { fs = fs * vw * 0.94 / bw; nameEl.style.fontSize = fs + 'px'; }
+    var maxW = vw * (small.matches ? 0.985 : 0.94);   // phones: edge to edge
+    if (bw > maxW) { fs = fs * maxW / bw; nameEl.style.fontSize = fs + 'px'; }
     nameEl.style.top = (rect.y + (small.matches ? NAME_BOTTOM_PHONE : NAME_BOTTOM) * s - nameEl.offsetHeight) + 'px';
     // On one line, nudge left so the tall tower covers the edge of the last E,
     // not the second L: the name stays readable and still sits behind the city.
