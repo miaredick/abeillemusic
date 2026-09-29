@@ -495,7 +495,10 @@ form.f {
   var sky = document.getElementById('skyline');
   var sctx = sky.getContext('2d');
   var nameEl = document.getElementById('heroName');
-  var SRC_W = 1920, SRC_H = 1080, BAND_TOP = 300, BAND_BOT = 528;
+  // Phones get a tall crop of the same shot (x 656..1264 of the 1920 frame),
+  // so the picture is sharp instead of a small wide file blown up.
+  var FULL_W = 1920, CROP_X = small.matches ? 656 : 0;
+  var SRC_W = small.matches ? 608 : 1920, SRC_H = 1080, BAND_TOP = 300, BAND_BOT = 528;
   var NAME_SCALE = 0.7;   // the name sits smaller than the full sky band
   var NAME_BOTTOM = 385;  // source-pixel line the name sits on: clear of her head, still behind the towers
   // The hero is gone by 0.62 of the first leg, in whole-page progress.
@@ -523,7 +526,7 @@ form.f {
     });
     if (bw > vw * 0.94) { fs = fs * vw * 0.94 / bw; nameEl.style.fontSize = fs + 'px'; }
     nameEl.style.top = (rect.y + NAME_BOTTOM * s - nameEl.offsetHeight) + 'px';
-    var ms = rect.w + 'px ' + rect.h + 'px', mp = rect.x + 'px ' + rect.y + 'px';
+    var ms = (FULL_W * s) + 'px ' + rect.h + 'px', mp = (rect.x - CROP_X * s) + 'px ' + rect.y + 'px';
     sky.style.webkitMaskSize = sky.style.maskSize = ms;
     sky.style.webkitMaskPosition = sky.style.maskPosition = mp;
     drawSky();
