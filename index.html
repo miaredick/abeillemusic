@@ -523,14 +523,16 @@ form.f {
   var sky = document.getElementById('skyline');
   var sctx = sky.getContext('2d');
   var nameEl = document.getElementById('heroName');
-  // Phones get a tall crop of the same shot (x 656..1264 of the 1920 frame),
-  // so the picture is sharp instead of a small wide file blown up.
-  var FULL_W = 1920, CROP_X = small.matches ? 656 : 0;
-  var SRC_W = small.matches ? 608 : 1920, SRC_H = 1080, BAND_TOP = 300, BAND_BOT = 528;
+  // Phones get their own tall video: a wide slice of the shot (x 460..1460 of
+  // the 1920 frame, scaled by K) with the sky extended above it (PAD px), so
+  // the phone shows the whole rooftop and skyline instead of a tight crop.
+  var FULL_W = 1920;
+  var CROP_X = small.matches ? 460 : 0, K = small.matches ? 0.72 : 1, PAD = small.matches ? 322 : 0;
+  var SRC_W = small.matches ? 720 : 1920, SRC_H = small.matches ? 1280 : 1080, BAND_TOP = 300, BAND_BOT = 528;
   var NAME_SCALE = 1.0;
   var NAME_SHIFT = 0;     // source px, one-line layout only
   var NAME_BOTTOM = 498;  // source-pixel line the name sits on: clear of her head, still behind the towers
-  var NAME_BOTTOM_PHONE = 300;  // phones: the tall crop has little skyline, so the name sits up in the sky
+  var NAME_BOTTOM_PHONE = 330;  // phones, in phone-video px: up in the extended sky
   // The hero is gone by 0.62 of the first leg, in whole-page progress.
   var HERO_END = 0.62 * W.segs[0].w / W.total;
   var heroOp = 1, soundOn = false, rect = { x: 0, y: 0, w: 0, h: 0, s: 1 };
@@ -548,7 +550,7 @@ form.f {
 
     // Fit the name into the band of open sky: two lines on a phone, one wide.
     var twoLines = vw / vh < 1.1;
-    var fs = NAME_SCALE * (BAND_BOT - BAND_TOP) * s / ((twoLines ? 2 : 1) * 0.84);
+    var fs = NAME_SCALE * (BAND_BOT - BAND_TOP) * s * K / ((twoLines ? 2 : 1) * 0.84);
     nameEl.style.fontSize = fs + 'px';
     var bw = 0;
     Array.prototype.forEach.call(twoLines ? nameEl.querySelectorAll('.l') : [nameEl], function (l) {
@@ -560,7 +562,7 @@ form.f {
     // not the second L: the name stays readable and still sits behind the city.
     var shift = twoLines || small.matches ? 0 : NAME_SHIFT * s;
     nameEl.style.left = shift + 'px'; nameEl.style.right = (-shift) + 'px';
-    var ms = (FULL_W * s) + 'px ' + rect.h + 'px', mp = (rect.x - CROP_X * s) + 'px ' + rect.y + 'px';
+    var ms = (FULL_W * s * K) + 'px ' + (1080 * s * K) + 'px', mp = (rect.x - CROP_X * s * K) + 'px ' + (rect.y + PAD * s) + 'px';
     sky.style.webkitMaskSize = sky.style.maskSize = ms;
     sky.style.webkitMaskPosition = sky.style.maskPosition = mp;
     drawSky();
