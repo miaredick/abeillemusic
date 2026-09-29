@@ -352,14 +352,14 @@ form.f {
       <img class="sc-world__poster" src="assets/dusk.jpg" alt="" decoding="async">
       <video data-sc-src="assets/dusk.mp4" data-sc-src-mobile="assets/dusk-m.mp4" muted playsinline></video>
     </div>
+    <div data-sc-segment data-sc-w="1.8" data-sc-linger="0.35" data-sc-waypoint="Abeille" id="namesSeg">
+      <img class="sc-world__poster" src="assets/peak.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/peak.mp4" data-sc-src-mobile="assets/peak-m.mp4" muted playsinline></video>
+    </div>
     <div data-sc-segment data-sc-w="1.5" data-sc-waypoint="Listen" id="roomSeg">
       <img class="sc-world__poster" src="assets/bg-live.jpg" alt="" decoding="async">
       <!-- No scrub clip here on purpose: her Below Grūnd set plays in real time (added by
            the page after mount, so the engine leaves it alone). -->
-    </div>
-    <div data-sc-segment data-sc-w="1.8" data-sc-linger="0.35" data-sc-waypoint="Abeille" id="namesSeg">
-      <img class="sc-world__poster" src="assets/peak.jpg" alt="" decoding="async">
-      <video data-sc-src="assets/peak.mp4" data-sc-src-mobile="assets/peak-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.1" data-sc-waypoint="Contact me">
       <img class="sc-world__poster" src="assets/last.jpg" alt="" decoding="async">
@@ -388,7 +388,7 @@ form.f {
 
   <div data-sc-world-copy>
 
-    <div class="fill" data-sc-copy data-sc-window="0.565 0.825 0.16 0.14">
+    <div class="fill" data-sc-copy data-sc-window="0.335 0.595 0.16 0.14">
       <div class="peak-scrim"></div>
       <div class="name name--solo">
         <h2><a class="name__link" href="abeille.html">Abeille<span class="rule"></span></a></h2>
@@ -398,7 +398,7 @@ form.f {
       </div>
     </div>
 
-    <div class="fill" data-sc-copy data-sc-window="0.345 0.555 0.2 0.18">
+    <div class="fill" data-sc-copy data-sc-window="0.61 0.835 0.2 0.18">
       <div class="side-scrim"></div>
       <div class="listen">
         <p class="kicker">Listen</p>
@@ -432,8 +432,8 @@ form.f {
   <ol id="faderList">
     <li><button type="button" data-go="0"><span>Golden hour</span></button></li>
     <li><button type="button" data-go="1"><span>Dusk</span></button></li>
-    <li><button type="button" data-go="2"><span>Listen</span></button></li>
-    <li><button type="button" data-go="3"><span>Abeille</span></button></li>
+    <li><button type="button" data-go="2"><span>Abeille</span></button></li>
+    <li><button type="button" data-go="3"><span>Listen</span></button></li>
     <li><button type="button" data-go="4"><span>Contact</span></button></li>
   </ol>
   <div class="fader__knob" id="knob"></div>
@@ -575,7 +575,7 @@ form.f {
   var melisA = document.getElementById('melisAudio');
   var clubA = document.getElementById('clubAudio');
   var actx = null, gM = null, gR = null;
-  var HANDOFF = 0.315;    // page progress where the Below Grūnd footage arrives: that set takes over
+  var HANDOFF = 0.598;    // page progress where the Below Grūnd footage arrives: that set takes over
   function mixFor(pr) {
     var club = pr >= HANDOFF;
     return { m: club ? 0 : 1, r: club ? (pr > 0.86 ? 0.7 : 1) : 0, club: club };
