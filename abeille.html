@@ -17,7 +17,7 @@
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Doto:wght@700..900&family=Unbounded:wght@700..900&family=Geist+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Doto:wght@700..900&family=Unbounded:wght@700..900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="scrollcraft.css">
 <link rel="stylesheet" href="profile.css">
 </head>
@@ -72,7 +72,7 @@
   </section>
 
   <section class="p-sec p-close" aria-labelledby="closeHead">
-    <h2 id="closeHead">Book Abeille.</h2>
+    <h2 id="closeHead">Contact me.</h2>
     
     <div class="row">
       <a class="btn" href="index.html#contact">Contact me</a>
@@ -91,10 +91,10 @@
   var upcoming = NEXT_DATES.filter(function (d) { return new Date(d.day + 'T23:59:59') >= startOfToday; });
   var items;
   if (upcoming.length) {
-    items = upcoming.map(function (d) { var t = new Date(d.day + 'T12:00:00'); return '<span><i class="bullet" aria-hidden="true">L</i><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>'; });
+    items = upcoming.map(function (d) { var t = new Date(d.day + 'T12:00:00'); return '<span><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>'; });
     while (items.length < 4) items = items.concat(items);
   } else {
-    items = PLAYED.map(function (p) { return '<span><i class="bullet" aria-hidden="true">L</i><b>Played</b> ' + p + '</span>'; });
+    items = PLAYED.map(function (p) { return '<span><b>Played</b> ' + p + '</span>'; });
   }
   var run = document.getElementById('tickerRun');
   run.innerHTML = items.join('');

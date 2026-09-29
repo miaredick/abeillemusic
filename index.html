@@ -18,7 +18,7 @@
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Doto:wght@700..900&family=Unbounded:wght@700..900&family=Geist+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Doto:wght@700..900&family=Unbounded:wght@700..900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="scrollcraft.css">
 <style>
 :root {
@@ -27,7 +27,7 @@
   --sc-accent: #c8ff2e;  --sc-accent-ink: #0b0b0c;
   --sc-font-display: "Manrope", system-ui, sans-serif;
   --sc-font-text: "Manrope", system-ui, sans-serif;
-  --sc-font-mono: "Geist Mono", ui-monospace, monospace;
+  --sc-font-mono: "Manrope", system-ui, sans-serif;
   --ticker-h: 36px;
   --led: #ff9f2e;          /* countdown-clock amber: the ticker only */
   --bar-h: 56px;
@@ -106,29 +106,40 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .btn--ghost { background: color-mix(in oklab, var(--sc-canvas) 72%, transparent); color: var(--sc-ink); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sc-ink) 22%, transparent); }
 @media (hover: hover) and (pointer: fine) { .btn--ghost:hover { background: color-mix(in oklab, var(--sc-canvas) 88%, transparent); } }
 
-/* The map. A fader: five stops on one channel, the knob is where you are. */
+/* The map, drawn like a subway line: five stations on one lime route, and a
+   small train that rides between them as you scroll. */
 .fader {
   position: fixed; z-index: 60; left: 50%; bottom: max(14px, env(safe-area-inset-bottom));
   translate: -50% 0; width: min(560px, calc(100vw - 2 * var(--sc-gutter)));
 }
 .fader ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
 .fader ol::before {
-  content: ""; position: absolute; left: 10%; right: 10%; top: 13px; height: 2px;
-  background: color-mix(in oklab, var(--sc-ink) 26%, transparent); border-radius: 2px;
+  content: ""; position: absolute; left: 10%; right: 10%; top: 12px; height: 5px;
+  background: var(--sc-accent); border-radius: 5px;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 0.35);
 }
 .fader__knob {
-  position: absolute; top: 4px; left: 0; width: 12px; height: 20px; margin-left: -6px; border-radius: 3px;
-  background: var(--sc-accent); box-shadow: var(--sc-e2);
+  position: absolute; top: 8px; left: 0; width: 24px; height: 13px; margin-left: -12px; border-radius: 7px;
+  background: var(--sc-canvas); box-shadow: inset 0 0 0 2px var(--sc-ink), 0 1px 4px rgb(0 0 0 / 0.5);
+  z-index: 3;
   transform: translate3d(calc(var(--k, 0) * 1px), 0, 0); will-change: transform; pointer-events: none;
 }
+.fader__knob::before, .fader__knob::after {
+  content: ""; position: absolute; top: 4px; width: 4px; height: 4px; border-radius: 1px; background: var(--sc-accent);
+}
+.fader__knob::before { left: 5px; } .fader__knob::after { right: 5px; }
 .fader button {
   appearance: none; background: none; border: 0; cursor: pointer; color: var(--sc-ink-soft);
-  display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 0 4px; width: 100%; min-height: 44px;
-  font: 500 0.66rem/1.2 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0 4px; width: 100%; min-height: 44px;
+  font: 700 0.7rem/1.2 var(--sc-font-text); letter-spacing: 0.01em;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.7);
   transition: color 160ms var(--sc-ease-out);
 }
-.fader button::before { content: ""; width: 2px; height: 8px; background: color-mix(in oklab, var(--sc-ink) 40%, transparent); }
+.fader button::before {
+  content: ""; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--sc-ink); box-shadow: 0 0 0 2.5px var(--sc-canvas);
+  position: relative; z-index: 1;
+}
 .fader button[aria-current="true"] { color: var(--sc-ink); }
 @media (min-width: 861px) {
   .fader button span { opacity: 0; transition: opacity 180ms var(--sc-ease-out); }
@@ -149,14 +160,22 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
   transform-origin: 50% 100%; will-change: transform;
 }
 .hero__name .amp { font-weight: 500; }
+/* Solid black, set down into the skyline so the towers stand in front of it. */
 .hero__name .pre { display: block; font-size: 0.56em; line-height: 0.84; margin-bottom: 0.05em; }
 .hero__scrim { position: absolute; inset: auto 0 0 0; height: 46%; background: linear-gradient(to top, rgb(11 11 12 / 0.86), rgb(11 11 12 / 0.55) 45%, transparent); }
 .hero__foot {
   position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: calc(76px + env(safe-area-inset-bottom));
-  display: flex; align-items: end; justify-content: space-between; gap: var(--sc-5); pointer-events: none;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sc-5); pointer-events: none;
 }
 .hero__foot > * { pointer-events: auto; }
 .hero__sub { margin: 0; max-width: 34ch; font-size: var(--sc-t-base); line-height: 1.5; text-wrap: balance; }
+.cue { position: absolute; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; transition: opacity 300ms var(--sc-ease-out); }
+.cue__label { font: 500 0.62rem/1 var(--sc-font-mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--sc-ink); padding-left: 0.24em; text-shadow: 0 1px 4px rgb(0 0 0 / 0.5); }
+.cue__line { position: relative; width: 1px; height: 36px; background: color-mix(in oklab, var(--sc-ink) 30%, transparent); overflow: hidden; }
+.cue__line::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 12px; background: var(--sc-ink); animation: cue 1.8s var(--sc-ease-in-out) infinite; }
+@keyframes cue { from { transform: translateY(-12px); } to { transform: translateY(36px); } }
+.cue.is-gone { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .cue__line::after { animation: none; top: 12px; } }
 .sound { min-width: 8.5rem; justify-content: center; }
 .sound svg { width: 16px; height: 16px; }
 
@@ -246,7 +265,11 @@ form.f {
 
 /* The close: her name, two ways to reach her, nothing else. */
 .contact-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(11 11 12 / 0.9) 0%, rgb(11 11 12 / 0.75) 45%, rgb(11 11 12 / 0.2) 75%, transparent 90%); }
-@media (max-width: 860px) { .contact-scrim { background: rgb(11 11 12 / 0.72); } }
+@media (max-width: 860px) {
+  .contact-scrim { background: rgb(11 11 12 / 0.72); }
+  .contact__ways a { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .contact__ways .v { font-size: var(--sc-t-lg); overflow-wrap: anywhere; }
+}
 .contact { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); top: 50%; transform: translateY(-50%); max-width: 44rem; }
 .contact h2 { margin: 0; font: 800 clamp(1.8rem, 3.8vw, 3.6rem)/0.95 "Unbounded", var(--sc-font-display); letter-spacing: -0.02em; text-transform: uppercase; }
 .contact .body { margin: var(--sc-5) 0 0; color: var(--sc-ink); max-width: 44ch; }
@@ -286,6 +309,7 @@ form.f {
   .bar .btn { height: 40px; padding-inline: 0.9rem; font-size: 0.84rem; }
   .bar .bar__sound { width: 40px; padding: 0; }
   .hero__sub { font-size: var(--sc-t-sm); max-width: 30ch; }
+  .cue { left: auto; right: var(--sc-gutter); translate: none; bottom: calc(150px + env(safe-area-inset-bottom)); }
   .fader button span { display: none; }
   .fader button[aria-current="true"] span { display: inline; position: absolute; top: -14px; white-space: nowrap; }
   .fader button { position: relative; }
@@ -296,7 +320,7 @@ form.f {
   .name--r { bottom: 88px; }
   .name h2 { font-size: clamp(2.2rem, 11vw, 3.6rem); }
   .name p { font-size: var(--sc-t-sm); }
-  .peak-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.7), transparent 18%), linear-gradient(to top, rgb(11 11 12 / 0.95) 0%, rgb(11 11 12 / 0.82) 30%, rgb(11 11 12 / 0.4) 48%, transparent 60%); }
+  .peak-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.7), transparent 18%), linear-gradient(to top, rgb(11 11 12 / 0.96) 0%, rgb(11 11 12 / 0.9) 34%, rgb(11 11 12 / 0.55) 52%, transparent 68%); }
   .rooms ul { font-size: clamp(2.2rem, 11vw, 3rem); }
   .listen { right: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 1rem); }
   .listen__head { font-size: var(--sc-t-lg); }
@@ -304,7 +328,7 @@ form.f {
   .listen__links { margin-top: var(--sc-4); }
   .listen__links a { font-size: var(--sc-t-base); }
   .gear { right: var(--sc-gutter); bottom: 90px; max-width: none; }
-  .side-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.85), rgb(11 11 12 / 0.3) 50%, rgb(11 11 12 / 0.88)); }
+  .side-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.93) 0%, rgb(11 11 12 / 0.88) 52%, rgb(11 11 12 / 0.4) 72%, transparent 88%); }
   .dusk-line { right: var(--sc-gutter); }
   .book { grid-template-columns: 1fr; gap: var(--sc-4); align-content: start; top: calc(var(--ticker-h) + var(--bar-h) + 0.5rem); bottom: 64px; overflow-y: auto; overscroll-behavior: contain; }
   .book__lede h2 { font-size: var(--sc-t-2xl); }
@@ -352,7 +376,7 @@ form.f {
       <img class="sc-world__poster" src="assets/gold.jpg" alt="" decoding="async">
       <video data-sc-src="assets/gold.mp4" data-sc-src-mobile="assets/gold-m.mp4" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="Dusk">
+    <div data-sc-segment data-sc-w="0.85" data-sc-waypoint="Dusk">
       <img class="sc-world__poster" src="assets/dusk.jpg" alt="" decoding="async">
       <video data-sc-src="assets/dusk.mp4" data-sc-src-mobile="assets/dusk-m.mp4" muted playsinline></video>
     </div>
@@ -380,8 +404,9 @@ form.f {
     <h1 class="hero__name" id="heroName"><span class="l">Abeille</span></h1>
     <canvas id="skyline" aria-hidden="true"></canvas>
     <div class="hero__scrim"></div>
+    <div class="cue" id="cue" aria-hidden="true"><span class="cue__label">Scroll</span><span class="cue__line"></span></div>
     <div class="hero__foot">
-      <p class="hero__sub">Istanbul-born, New York-based DJ playing groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.</p>
+      <p class="hero__sub">Istanbul-born, New York-based DJ.</p>
       <button class="btn btn--ghost sound" id="sound" type="button" aria-pressed="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path id="soundWave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" opacity="0.35"/></svg>
         <span id="soundLabel">Sound on</span>
@@ -392,7 +417,7 @@ form.f {
 
   <div data-sc-world-copy>
 
-    <div class="fill" data-sc-copy data-sc-window="0.335 0.595 0.16 0.14">
+    <div class="fill" data-sc-copy data-sc-window="0.285 0.565 0.16 0.14">
       <div class="peak-scrim"></div>
       <div class="name name--solo">
         <h2><a class="name__link" href="abeille.html">Abeille<span class="rule"></span></a></h2>
@@ -401,7 +426,7 @@ form.f {
       </div>
     </div>
 
-    <div class="fill" data-sc-copy data-sc-window="0.61 0.835 0.2 0.18">
+    <div class="fill" data-sc-copy data-sc-window="0.585 0.815 0.2 0.18">
       <div class="side-scrim"></div>
       <div class="listen">
         <p class="kicker">Listen</p>
@@ -415,12 +440,12 @@ form.f {
       </div>
     </div>
 
-    <div class="fill" data-sc-copy data-sc-window="0.85 1 0.3 0" id="book">
+    <div class="fill" data-sc-copy data-sc-window="0.83 1 0.3 0" id="book">
       <div class="contact-scrim"></div>
       <div class="contact">
         <h2>Contact me.</h2>
         <ul class="contact__ways">
-          <li id="phoneWay" hidden><a id="phoneLink" href="#"><span class="k">Call or text</span><span class="v" id="phoneText"></span></a></li>
+          <li><a href="mailto:melissesser@gmail.com?subject=Booking%20inquiry"><span class="k">Email</span><span class="v">melissesser@gmail.com</span></a></li>
           <li><a href="https://ig.me/m/abeille____" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="v">@abeille____</span></a></li>
         </ul>
         <p class="contact__credit">Rooftop footage: _nevs tv. Club footage: Below Grūnd. Photographs: @ceninvoncatlien2, @erikpel and @donxulio_.</p>
@@ -455,8 +480,6 @@ form.f {
      drops off by itself and the ticker goes back to where she has played. */
   var NEXT_DATES = [{ day: '2026-11-10', where: 'Bossa Nova Civic Club, Brooklyn' }];
   var PLAYED = ['Below Grūnd', 'Şahika Istanbul', 'Synctika Brooklyn', '_nevs tv rooftop', 'UNCURED TV', 'Subtle Radio', 'Noh Radio', 'Root Radio', 'Feel Groove Radio', 'The Black Room Radio', 'Radio Analogique'];
-  /* Her number, as she wants it shown (e.g. '(917) 555-0123'). Empty = hidden. */
-  var PHONE = '(941) 960-5347';
 
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -474,11 +497,11 @@ form.f {
   if (upcoming.length) {
     items = upcoming.map(function (d) {
       var t = new Date(d.day + 'T12:00:00');
-      return '<span><i class="bullet" aria-hidden="true">L</i><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>';
+      return '<span><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>';
     });
     while (items.length < 4) items = items.concat(items);   // one show still fills the strip
   } else {
-    items = PLAYED.map(function (p) { return '<span><i class="bullet" aria-hidden="true">L</i><b>Played</b> ' + p + '</span>'; });
+    items = PLAYED.map(function (p) { return '<span><b>Played</b> ' + p + '</span>'; });
   }
   run.innerHTML = items.join('');
   var twin = run.cloneNode(true); twin.setAttribute('aria-hidden', 'true'); twin.removeAttribute('id');
@@ -502,8 +525,9 @@ form.f {
   // so the picture is sharp instead of a small wide file blown up.
   var FULL_W = 1920, CROP_X = small.matches ? 656 : 0;
   var SRC_W = small.matches ? 608 : 1920, SRC_H = 1080, BAND_TOP = 300, BAND_BOT = 528;
-  var NAME_SCALE = 0.7;   // the name sits smaller than the full sky band
-  var NAME_BOTTOM = 385;  // source-pixel line the name sits on: clear of her head, still behind the towers
+  var NAME_SCALE = 1.0;
+  var NAME_SHIFT = 0;     // source px, one-line layout only
+  var NAME_BOTTOM = 498;  // source-pixel line the name sits on: clear of her head, still behind the towers
   // The hero is gone by 0.62 of the first leg, in whole-page progress.
   var HERO_END = 0.62 * W.segs[0].w / W.total;
   var heroOp = 1, soundOn = false, rect = { x: 0, y: 0, w: 0, h: 0, s: 1 };
@@ -529,6 +553,10 @@ form.f {
     });
     if (bw > vw * 0.94) { fs = fs * vw * 0.94 / bw; nameEl.style.fontSize = fs + 'px'; }
     nameEl.style.top = (rect.y + NAME_BOTTOM * s - nameEl.offsetHeight) + 'px';
+    // On one line, nudge left so the tall tower covers the edge of the last E,
+    // not the second L: the name stays readable and still sits behind the city.
+    var shift = twoLines || small.matches ? 0 : NAME_SHIFT * s;
+    nameEl.style.left = shift + 'px'; nameEl.style.right = (-shift) + 'px';
     var ms = (FULL_W * s) + 'px ' + rect.h + 'px', mp = (rect.x - CROP_X * s) + 'px ' + rect.y + 'px';
     sky.style.webkitMaskSize = sky.style.maskSize = ms;
     sky.style.webkitMaskPosition = sky.style.maskPosition = mp;
@@ -578,7 +606,7 @@ form.f {
   var melisA = document.getElementById('melisAudio');
   var clubA = document.getElementById('clubAudio');
   var actx = null, gM = null, gR = null;
-  var HANDOFF = 0.318;    // page progress where the Below Grūnd footage arrives: that set takes over
+  var HANDOFF = 0.268;    // page progress where the Below Grūnd footage arrives: that set takes over
   function mixFor(pr) {
     var club = pr >= HANDOFF;
     return { m: club ? 0 : 1, r: club ? (pr > 0.86 ? 0.7 : 1) : 0, club: club };
@@ -684,6 +712,7 @@ form.f {
 
   /* --------------------------------------------------------------- loop --- */
   var markEl = document.querySelector('.mark');
+  var cueEl = document.getElementById('cue');
   function frame(now) {
     var dt = Math.min(64, now - lastT); lastT = now;
     var y = scrollY; vel = vel * 0.85 + (y - lastY) * 0.15; lastY = y;
@@ -711,6 +740,7 @@ form.f {
     }
     markEl.style.setProperty('--bar-ink', heroOp > 0.5 ? 'var(--sc-accent-ink)' : 'var(--sc-ink)');
     updateLean();
+    cueEl.classList.toggle('is-gone', scrollY > 24);
 
 
     if (stops.length) {
@@ -727,15 +757,6 @@ form.f {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { dispatchEvent(new Event('resize')); });
   onResize();
   requestAnimationFrame(frame);
-
-  /* ------------------------------------------------------------ contact --
-     One card, two ways to reach her. The phone row stays hidden until PHONE
-     is filled in, so the page never shows a placeholder number.            */
-  if (PHONE) {
-    document.getElementById('phoneText').textContent = PHONE;
-    document.getElementById('phoneLink').href = 'tel:+1' + PHONE.replace(/[^0-9]/g, '');
-    document.getElementById('phoneWay').hidden = false;
-  }
 
   // Arriving from her page (index.html#contact): land straight on the card.
   if (location.hash === '#contact') {
