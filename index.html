@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abeille · New York DJ | Hypnotic techno, left-field house</title>
+<meta name="description" content="Abeille (Melis Eser) is an Istanbul-born, New York-based DJ playing groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.">
+<meta name="theme-color" content="#0b0b0c">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Abeille · New York DJ">
+<meta property="og:description" content="Istanbul-born, New York-based DJ playing groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.">
+<meta property="og:image" content="https://miaredick.github.io/abeillemusic/assets/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://miaredick.github.io/abeillemusic/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Abeille", "alternateName": "Melis Eser", "jobTitle": "DJ", "description": "Istanbul-born, New York-based DJ playing groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.", "url": "https://miaredick.github.io/abeillemusic/", "image": "https://miaredick.github.io/abeillemusic/assets/share.jpg", "homeLocation": {"@type": "Place", "name": "New York City"}, "sameAs": ["https://www.instagram.com/abeille____/", "https://linktr.ee/abeille__", "https://www.youtube.com/watch?v=L6z0ljJA3YI", "https://www.youtube.com/watch?v=DPb9WRZc78A"]}</script>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Doto:wght@700..900&family=Unbounded:wght@700..900&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+:root {
+  --sc-canvas: #0b0b0c;  --sc-surface: #151517;
+  --sc-ink: #f3f1ec;     --sc-ink-soft: #aeaaa2;
+  --sc-accent: #c8ff2e;  --sc-accent-ink: #0b0b0c;
+  --sc-font-display: "Archivo", system-ui, sans-serif;
+  --sc-font-text: "Geist", system-ui, sans-serif;
+  --sc-font-mono: "Geist Mono", ui-monospace, monospace;
+  --ticker-h: 36px;
+  --led: #ff9f2e;          /* countdown-clock amber: the ticker only */
+  --bar-h: 56px;
+  color-scheme: dark;
+}
+html { background: var(--sc-canvas); }
+body {
+  margin: 0; background: var(--sc-canvas); color: var(--sc-ink);
+  font-family: var(--sc-font-text); font-size: var(--sc-t-base);
+  line-height: var(--sc-leading-body); letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--sc-accent); color: var(--sc-accent-ink); }
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 3px; border-radius: 4px; }
+
+/* ------------------------------------------------------------ chrome ---- */
+/* The ticker is a station countdown clock: amber dot-matrix on black, each
+   entry led by an L-train bullet (the Brooklyn line, and grey, which is the
+   one line colour that belongs on a black-and-white page). */
+.ticker {
+  position: fixed; inset: 0 0 auto 0; height: var(--ticker-h); z-index: 61;
+  background: #050505; color: var(--led);
+  font: 800 1.02rem/var(--ticker-h) "Doto", var(--sc-font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+  overflow: hidden; white-space: nowrap;
+  border-bottom: 1px solid #1c1c1c;
+  box-shadow: inset 0 1px 0 #1a1a1a;
+}
+.ticker::after {
+  /* the LED panel's grille: a faint dot screen over the whole strip */
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(circle, rgb(255 159 46 / 0.07) 0.8px, transparent 1.2px);
+  background-size: 4px 4px;
+}
+.ticker__track { position: relative; z-index: 1; display: inline-flex; animation: tick 60s linear infinite; will-change: transform; }
+.ticker__run { display: inline-flex; gap: 3rem; padding-right: 3rem; }
+.ticker__run > span { display: inline-flex; align-items: center; gap: 0.7em; }
+.ticker__run b { font-weight: 700; opacity: 0.62; }
+.bullet {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  display: inline-grid; place-items: center;
+  background: #a7a9ac; color: #fff;
+  font: 700 0.8rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 0;
+}
+@keyframes tick { to { transform: translate3d(-50%, 0, 0); } }
+.ticker:hover .ticker__track { animation-play-state: paused; }
+
+.bar {
+  position: fixed; top: var(--ticker-h); inset-inline: 0; height: var(--bar-h); z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-inline: var(--sc-gutter); pointer-events: none;
+}
+.bar > * { pointer-events: auto; }
+.mark {
+  font: 800 1rem/1 var(--sc-font-display); font-stretch: 72%; letter-spacing: 0.02em; text-transform: uppercase;
+  color: var(--bar-ink, var(--sc-accent-ink)); text-decoration: none;
+  transition: color 240ms var(--sc-ease-out);
+}
+.mark span { font-weight: 500; }
+.bar__right { display: flex; align-items: center; gap: var(--sc-2); }
+.btn.bar__sound { width: 44px; padding: 0; flex: none; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 200ms var(--sc-ease-out), transform 140ms var(--sc-ease-out); }
+.bar__sound svg { width: 18px; height: 18px; flex: none; }
+.btn.bar__sound.is-shown { opacity: 1; pointer-events: auto; }
+.btn {
+  appearance: none; border: 0; cursor: pointer; text-decoration: none; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  height: 44px; padding-inline: 1.15rem; border-radius: var(--sc-r-sm);
+  background: var(--sc-accent); color: var(--sc-accent-ink);
+  font: 600 0.9rem/1 var(--sc-font-text); letter-spacing: 0.01em;
+  box-shadow: var(--sc-e1);
+  transition: transform 140ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out);
+}
+@media (hover: hover) and (pointer: fine) { .btn:hover { background: color-mix(in oklab, var(--sc-accent) 86%, white); } }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn--ghost { background: color-mix(in oklab, var(--sc-canvas) 72%, transparent); color: var(--sc-ink); box-shadow: var(--sc-edge), var(--sc-e1); }
+@media (hover: hover) and (pointer: fine) { .btn--ghost:hover { background: color-mix(in oklab, var(--sc-canvas) 88%, transparent); } }
+
+/* The map. A fader: five stops on one channel, the knob is where you are. */
+.fader {
+  position: fixed; z-index: 60; left: 50%; bottom: max(14px, env(safe-area-inset-bottom));
+  translate: -50% 0; width: min(560px, calc(100vw - 2 * var(--sc-gutter)));
+}
+.fader ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+.fader ol::before {
+  content: ""; position: absolute; left: 10%; right: 10%; top: 13px; height: 2px;
+  background: color-mix(in oklab, var(--sc-ink) 26%, transparent); border-radius: 2px;
+}
+.fader__knob {
+  position: absolute; top: 4px; left: 0; width: 12px; height: 20px; margin-left: -6px; border-radius: 3px;
+  background: var(--sc-accent); box-shadow: var(--sc-e2);
+  transform: translate3d(calc(var(--k, 0) * 1px), 0, 0); will-change: transform; pointer-events: none;
+}
+.fader button {
+  appearance: none; background: none; border: 0; cursor: pointer; color: var(--sc-ink-soft);
+  display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 0 4px; width: 100%; min-height: 44px;
+  font: 500 0.66rem/1.2 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+  transition: color 160ms var(--sc-ease-out);
+}
+.fader button::before { content: ""; width: 2px; height: 8px; background: color-mix(in oklab, var(--sc-ink) 40%, transparent); }
+.fader button[aria-current="true"] { color: var(--sc-ink); }
+@media (hover: hover) and (pointer: fine) { .fader button:hover { color: var(--sc-ink); } }
+
+/* --------------------------------------------------------------- hero ---- */
+.hero { position: fixed; inset: 0; z-index: 2; overflow: clip; pointer-events: none; will-change: opacity; }
+.hero video, .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#skyline { -webkit-mask-image: url(assets/skyline-mask.png); mask-image: url(assets/skyline-mask.png); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.hero video { object-fit: cover; background: #7d8fc4 url(assets/hero-poster.jpg) center / cover; }
+.hero__name {
+  position: absolute; left: 0; right: 0; margin: 0; text-align: center; white-space: nowrap;
+  font-family: "Unbounded", var(--sc-font-display); font-weight: 800;
+  text-transform: uppercase; letter-spacing: -0.02em; line-height: 0.9;
+  color: var(--sc-canvas);
+  transform-origin: 50% 100%; will-change: transform;
+}
+.hero__name .amp { font-weight: 500; }
+.hero__name .pre { display: block; font-size: 0.56em; line-height: 0.84; margin-bottom: 0.05em; }
+.hero__scrim { position: absolute; inset: auto 0 0 0; height: 46%; background: linear-gradient(to top, rgb(11 11 12 / 0.86), rgb(11 11 12 / 0.55) 45%, transparent); }
+.hero__foot {
+  position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: calc(76px + env(safe-area-inset-bottom));
+  display: flex; align-items: end; justify-content: space-between; gap: var(--sc-5); pointer-events: none;
+}
+.hero__foot > * { pointer-events: auto; }
+.hero__sub { margin: 0; max-width: 38ch; font-size: var(--sc-t-lg); line-height: 1.4; text-wrap: balance; }
+.sound { min-width: 8.5rem; justify-content: center; }
+.sound svg { width: 16px; height: 16px; }
+
+
+/* -------------------------------------------------------------- copy ----- */
+.seg-live { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+.fill { position: absolute; inset: 0; }
+/* A .fill block spans the whole screen, so it must never catch clicks itself,
+   or a block on top swallows clicks meant for the one under it. Only its controls take clicks, and only while the engine has
+   marked the block live. */
+.fill { pointer-events: none !important; }
+.fill[style*="pointer-events: auto"] :is(a, button, input, select, textarea, label, .boro, .book, form) { pointer-events: auto; }
+.kicker { font: 500 0.72rem/1.2 var(--sc-font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--sc-accent); margin: 0 0 var(--sc-3); }
+.say { margin: 0; font: 700 var(--sc-t-2xl)/1.02 var(--sc-font-display); font-stretch: 80%; letter-spacing: var(--sc-track-snug); text-wrap: balance; max-width: 16ch; }
+.body { margin: var(--sc-4) 0 0; color: var(--sc-ink-soft); max-width: 40ch; text-wrap: pretty; line-height: 1.66; }
+
+.lead-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(11 11 12 / 0.78), rgb(11 11 12 / 0.4) 32%, transparent 55%); }
+.dusk-line { position: absolute; left: var(--sc-gutter); top: 30%; }
+.dusk-line .say { font-size: var(--sc-t-xl); font-weight: 600; font-stretch: 90%; max-width: 20ch; }
+
+/* The peak. Two halves, one room, two names. */
+.peak-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgb(11 11 12 / 0.9) 0%, rgb(11 11 12 / 0.55) 30%, transparent 55%); }
+.name { position: absolute; bottom: clamp(5.5rem, 13vh, 8rem); width: calc(50% - 2 * var(--sc-gutter)); }
+.name--a, .name--solo { left: var(--sc-gutter); }
+.name--solo { width: min(44rem, calc(100% - 2 * var(--sc-gutter))); }
+.name--solo h2 { font-size: clamp(3rem, 9vw, 9rem); }
+.name--r { left: calc(50% + var(--sc-gutter)); }
+.name h2 {
+  margin: 0; font-family: "Unbounded", var(--sc-font-display); font-weight: 800;
+  font-size: clamp(2.4rem, 5.6vw, 6.4rem); line-height: 0.92; letter-spacing: -0.02em; text-transform: uppercase;
+  color: var(--sc-ink);
+}
+.name h2 .rule { display: block; height: 3px; width: 2.2ch; background: var(--sc-accent); margin: 0.12em 0 0; }
+.name p { margin: var(--sc-4) 0 0; max-width: 36ch; color: var(--sc-ink); font-size: var(--sc-t-base); line-height: 1.5; }
+.name__link { color: inherit; text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .name__link:hover .rule { width: 100%; } }
+.name h2 .rule { transition: width 260ms var(--sc-ease-out); }
+.name__more { display: inline-flex; align-items: center; gap: 0.5em; margin-top: var(--sc-4); min-height: 44px; padding: 0 1rem; border-radius: var(--sc-r-sm); background: var(--sc-accent); color: var(--sc-accent-ink); font: 600 0.9rem/1 var(--sc-font-text); text-decoration: none; box-shadow: var(--sc-e1); transition: transform 140ms var(--sc-ease-out); }
+.name__more:active { transform: scale(0.97); }
+.name p small { display: block; margin-top: var(--sc-2); color: var(--sc-ink-soft); font: 400 0.72rem/1.5 var(--sc-font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
+
+.listen { position: absolute; left: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 6vh); max-width: 38rem; }
+.listen__head { margin: 0; font: 700 var(--sc-t-2xl)/1.04 var(--sc-font-display); font-stretch: 82%; letter-spacing: var(--sc-track-snug); text-wrap: balance; }
+.listen .body { color: var(--sc-ink); max-width: 44ch; }
+.listen__links { list-style: none; margin: var(--sc-6) 0 0; padding: 0; border-top: 1px solid var(--sc-hairline-strong); }
+.listen__links a { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sc-4); min-height: 44px; padding: var(--sc-3) 0; border-bottom: 1px solid var(--sc-hairline-strong); text-decoration: none; font: 600 var(--sc-t-lg)/1.2 var(--sc-font-display); font-stretch: 86%; }
+.listen__links a span { font: 500 0.72rem/1 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+@media (hover: hover) and (pointer: fine) { .listen__links a:hover { color: var(--sc-accent); } }
+.rooms { position: absolute; left: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 6vh); }
+.rooms ul { list-style: none; margin: 0; padding: 0; font: 800 var(--sc-t-3xl)/0.96 var(--sc-font-display); font-stretch: 70%; text-transform: uppercase; letter-spacing: -0.005em; }
+.rooms li:nth-child(even) { color: var(--sc-ink-soft); }
+.rooms .body { color: var(--sc-ink); }
+.gear { position: absolute; left: var(--sc-gutter); bottom: clamp(6rem, 14vh, 8.5rem); max-width: 26rem; }
+.gear .say { font-size: var(--sc-t-xl); max-width: 18ch; }
+.side-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(11 11 12 / 0.85), rgb(11 11 12 / 0.4) 45%, transparent 62%), linear-gradient(to top, rgb(11 11 12 / 0.8), transparent 40%); }
+
+/* The close. The lights are down, nothing moves, and the form is simple. */
+.book {
+  position: absolute; left: var(--sc-gutter); right: var(--sc-gutter);
+  top: calc(var(--ticker-h) + var(--bar-h) + 2vh); bottom: 84px;
+  display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center;
+  max-width: 72rem; margin-inline: auto;
+}
+.book__lede h2 { margin: 0; font: 800 var(--sc-t-3xl)/0.94 var(--sc-font-display); font-stretch: 72%; text-transform: uppercase; letter-spacing: -0.005em; }
+.book__credit { margin-top: var(--sc-6); font: 400 0.7rem/1.6 var(--sc-font-mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--sc-ink-soft); }
+form.f {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sc-4);
+  padding: clamp(1.25rem, 2.6vw, 2rem); border-radius: var(--sc-r-md);
+  background: color-mix(in oklab, var(--sc-surface) 92%, transparent); box-shadow: var(--sc-edge), var(--sc-e3);
+}
+.f label { display: grid; gap: 6px; font: 500 0.72rem/1.2 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.f .wide { grid-column: 1 / -1; }
+.f input, .f select, .f textarea {
+  width: 100%; box-sizing: border-box; font: 400 1rem/1.4 var(--sc-font-text); color: var(--sc-ink); letter-spacing: 0;
+  background: var(--sc-canvas); border: 1px solid var(--sc-hairline-strong); border-radius: var(--sc-r-sm);
+  padding: 0.65rem 0.75rem; min-height: 44px; caret-color: var(--sc-accent); text-transform: none;
+  transition: border-color 160ms var(--sc-ease-out);
+}
+.f textarea { resize: vertical; min-height: 72px; }
+.f input:hover, .f select:hover, .f textarea:hover { border-color: color-mix(in oklab, var(--sc-ink) 40%, transparent); }
+.f input:focus-visible, .f select:focus-visible, .f textarea:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 1px; border-color: transparent; }
+.f .check { display: flex; align-items: center; gap: 10px; font: 400 0.95rem/1.3 var(--sc-font-text); letter-spacing: 0; text-transform: none; color: var(--sc-ink); min-height: 44px; }
+.f .check input { width: 20px; height: 20px; min-height: 0; accent-color: var(--sc-accent); margin: 0; }
+.f__row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: var(--sc-4); flex-wrap: wrap; }
+.f__status { margin: 0; font-size: var(--sc-t-sm); color: var(--sc-ink-soft); min-height: 1.4em; }
+.f__status[data-state="ok"] { color: var(--sc-accent); }
+
+/* The close: her name, two ways to reach her, nothing else. */
+.contact-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(11 11 12 / 0.9) 0%, rgb(11 11 12 / 0.75) 45%, rgb(11 11 12 / 0.2) 75%, transparent 90%); }
+@media (max-width: 860px) { .contact-scrim { background: rgb(11 11 12 / 0.72); } }
+.contact { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); top: 50%; transform: translateY(-50%); max-width: 44rem; }
+.contact h2 { margin: 0; font: 800 clamp(1.8rem, 3.8vw, 3.6rem)/0.95 "Unbounded", var(--sc-font-display); letter-spacing: -0.02em; text-transform: uppercase; }
+.contact .body { margin: var(--sc-5) 0 0; color: var(--sc-ink); max-width: 44ch; }
+.contact__ways { list-style: none; margin: var(--sc-6) 0 0; padding: 0; border-top: 1px solid var(--sc-hairline-strong); }
+.contact__ways a { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sc-5); min-height: 56px; padding: var(--sc-4) 0; border-bottom: 1px solid var(--sc-hairline-strong); text-decoration: none; }
+.contact__ways .k { font: 500 0.78rem/1 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.contact__ways .v { font: 700 var(--sc-t-xl)/1.1 var(--sc-font-display); font-stretch: 86%; color: var(--sc-ink); transition: color 160ms var(--sc-ease-out); }
+@media (hover: hover) and (pointer: fine) { .contact__ways a:hover .v { color: var(--sc-accent); } }
+.contact__credit { margin-top: var(--sc-7); font: 400 0.7rem/1.6 var(--sc-font-mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--sc-ink-soft); }
+
+/* The borough map. Official outlines, simplified; tap one and it lights up. */
+.boro-map { margin: var(--sc-6) 0 0; max-width: 22rem; }
+.boro-map svg { display: block; width: 100%; height: auto; overflow: visible; }
+.boro { fill: #29292d; stroke: color-mix(in oklab, var(--sc-ink) 38%, transparent); stroke-width: 0.8; stroke-linejoin: round; cursor: pointer; transition: fill 160ms var(--sc-ease-out); }
+@media (hover: hover) and (pointer: fine) { .boro:hover { fill: #3a3a3f; } }
+.boro.is-on { fill: var(--sc-accent); stroke: var(--sc-accent); }
+.boro-map figcaption { margin-top: var(--sc-3); font: 500 0.72rem/1.4 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.boro-map figcaption b { color: var(--sc-accent); font-weight: 500; }
+.boro-pick { border: 0; margin: 0; padding: 0; min-width: 0; }
+.boro-pick legend { padding: 0; margin-bottom: 6px; font: 500 0.72rem/1.2 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { position: relative; display: inline-flex; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 0 0.8rem; border-radius: var(--sc-r-pill);
+  border: 1px solid var(--sc-hairline-strong); font: 400 0.9rem/1 var(--sc-font-text); color: var(--sc-ink); letter-spacing: 0; text-transform: none;
+  transition: background-color 160ms var(--sc-ease-out), border-color 160ms var(--sc-ease-out), color 160ms var(--sc-ease-out);
+}
+@media (hover: hover) and (pointer: fine) { .chip:hover span { border-color: color-mix(in oklab, var(--sc-ink) 50%, transparent); } }
+.chip input:checked + span { background: var(--sc-accent); border-color: var(--sc-accent); color: var(--sc-accent-ink); }
+.chip input:focus-visible + span { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
+
+/* -------------------------------------------------------------- phone ---- */
+@media (max-width: 860px) {
+  :root { --bar-h: 52px; }
+  .mark { font-size: 0.86rem; }
+  .bar .btn { height: 40px; padding-inline: 0.9rem; font-size: 0.84rem; }
+  .bar .bar__sound { width: 40px; padding: 0; }
+  .hero__sub { font-size: var(--sc-t-base); }
+  .fader button span { display: none; }
+  .fader button[aria-current="true"] span { display: inline; position: absolute; top: -14px; white-space: nowrap; }
+  .fader button { position: relative; }
+  .name { width: auto; left: var(--sc-gutter); right: var(--sc-gutter); }
+  .name--a { top: calc(var(--ticker-h) + var(--bar-h) + 1rem); bottom: auto; }
+  .name--solo { bottom: 88px; }
+  .name--solo h2 { font-size: clamp(2.6rem, 15vw, 4.2rem); }
+  .name--r { bottom: 88px; }
+  .name h2 { font-size: clamp(2.2rem, 11vw, 3.6rem); }
+  .name p { font-size: var(--sc-t-sm); }
+  .peak-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.7), transparent 18%), linear-gradient(to top, rgb(11 11 12 / 0.95) 0%, rgb(11 11 12 / 0.82) 30%, rgb(11 11 12 / 0.4) 48%, transparent 60%); }
+  .rooms ul { font-size: clamp(2.2rem, 11vw, 3rem); }
+  .listen { right: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 1rem); }
+  .listen__head { font-size: var(--sc-t-xl); }
+  .listen .body { font-size: var(--sc-t-sm); }
+  .listen__links { margin-top: var(--sc-4); }
+  .listen__links a { font-size: var(--sc-t-base); }
+  .gear { right: var(--sc-gutter); bottom: 90px; max-width: none; }
+  .side-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.85), rgb(11 11 12 / 0.3) 50%, rgb(11 11 12 / 0.88)); }
+  .dusk-line { right: var(--sc-gutter); }
+  .book { grid-template-columns: 1fr; gap: var(--sc-4); align-content: start; top: calc(var(--ticker-h) + var(--bar-h) + 0.5rem); bottom: 64px; overflow-y: auto; overscroll-behavior: contain; }
+  .book__lede h2 { font-size: var(--sc-t-2xl); }
+  .book__lede .body { margin-top: var(--sc-2); font-size: var(--sc-t-sm); }
+  .book__credit { display: none; }
+  .boro-map { max-width: 13rem; margin-top: var(--sc-3); }
+  form.f { gap: var(--sc-3); padding: 1rem; }
+  .f textarea { min-height: 56px; }
+}
+@media (max-width: 860px) and (orientation: portrait) {
+  .hero__foot { flex-direction: column; align-items: flex-start; bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .hero__name .l { display: block; }
+}
+@media (max-width: 860px) and (max-height: 700px) { .book__lede .body { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker__track { animation: none; }
+  .ticker { overflow-x: auto; }
+  .hero__name { transform: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-label="Where they have played">
+  <div class="ticker__track"><div class="ticker__run" id="tickerRun"></div></div>
+</div>
+
+<header class="bar">
+  <a class="mark" href="#top" aria-label="Abeille, back to the top">Abeille</a>
+  <div class="bar__right">
+    <button class="btn btn--ghost bar__sound" id="soundBar" type="button" aria-pressed="false" aria-label="Sound on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" opacity="0.35"/></svg>
+    </button>
+    <a class="btn" href="#book" data-go="4">Contact me</a>
+  </div>
+</header>
+<audio id="melisAudio" src="assets/melis-audio.m4a" preload="none" loop></audio>
+<audio id="clubAudio" src="assets/bg-audio.m4a" preload="none" loop></audio>
+
+<main id="top" data-sc-mode="worldflight" data-sc-seam="0.16" data-sc-lerp="0.12">
+
+  <div data-sc-world>
+    <div data-sc-segment data-sc-w="0.8" data-sc-waypoint="Golden hour">
+      <img class="sc-world__poster" src="assets/gold.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/gold.mp4" data-sc-src-mobile="assets/gold-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.3" data-sc-waypoint="Dusk">
+      <img class="sc-world__poster" src="assets/dusk.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/dusk.mp4" data-sc-src-mobile="assets/dusk-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.5" data-sc-waypoint="Listen" id="roomSeg">
+      <img class="sc-world__poster" src="assets/bg-live.jpg" alt="" decoding="async">
+      <!-- No scrub clip here on purpose: her Below Grūnd set plays in real time (added by
+           the page after mount, so the engine leaves it alone). -->
+    </div>
+    <div data-sc-segment data-sc-w="1.8" data-sc-linger="0.35" data-sc-waypoint="Abeille" id="namesSeg">
+      <img class="sc-world__poster" src="assets/peak.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/peak.mp4" data-sc-src-mobile="assets/peak-m.mp4" muted playsinline></video>
+    </div>
+    <div data-sc-segment data-sc-w="1.1" data-sc-waypoint="Contact me">
+      <img class="sc-world__poster" src="assets/last.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/last.mp4" data-sc-src-mobile="assets/last-m.mp4" muted playsinline></video>
+    </div>
+  </div>
+
+  <!-- The establishing shot: the set itself, in real time, with the name standing
+       in the sky BEHIND the skyline. The canvas redraws the buildings from the same
+       video frame through a mask, so the towers and spires cover the letters. -->
+  <section class="hero" id="hero" aria-labelledby="heroName">
+    <video id="live" muted loop playsinline preload="auto" poster="assets/hero-poster.jpg"
+           aria-label="Abeille (Melis Eser) playing a rooftop set in Brooklyn at sunset"></video>
+    <h1 class="hero__name" id="heroName"><span class="l">Abeille</span></h1>
+    <canvas id="skyline" aria-hidden="true"></canvas>
+    <div class="hero__scrim"></div>
+    <div class="hero__foot">
+      <p class="hero__sub">Istanbul-born, New York-based DJ playing groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.</p>
+      <button class="btn btn--ghost sound" id="sound" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path id="soundWave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" opacity="0.35"/></svg>
+        <span id="soundLabel">Sound on</span>
+      </button>
+    </div>
+  </section>
+
+
+  <div data-sc-world-copy>
+
+    <div class="fill" data-sc-copy data-sc-window="0.565 0.825 0.16 0.14">
+      <div class="peak-scrim"></div>
+      <div class="name name--solo">
+        <h2><a class="name__link" href="abeille.html">Abeille<span class="rule"></span></a></h2>
+        <p>Melis Eser. Groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.
+          <small>Below Grūnd · _nevs tv · UNCURED TV · Şahika Istanbul · Synctika</small></p>
+        <a class="name__more" href="abeille.html">Watch Abeille play <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div class="fill" data-sc-copy data-sc-window="0.345 0.555 0.2 0.18">
+      <div class="side-scrim"></div>
+      <div class="listen">
+        <p class="kicker">Listen</p>
+        <h2 class="listen__head">Istanbul‑born, New York‑based.</h2>
+        <p class="body">ABEILLE is an Istanbul-born, New York-based DJ and emerging artist with five years of experience in the underground electronic music scene. Her sound moves through groovy, hypnotic techno, alongside left-field house, ambient, and old‑school breakbeat.</p>
+        <ul class="listen__links">
+          <li><a href="https://www.youtube.com/watch?v=L6z0ljJA3YI" target="_blank" rel="noopener">Below Grūnd, July 2026<span>YouTube</span></a></li>
+          <li><a href="https://www.youtube.com/watch?v=DPb9WRZc78A" target="_blank" rel="noopener">Rooftop set for _nevs tv<span>YouTube</span></a></li>
+          <li><a href="https://linktr.ee/abeille__" target="_blank" rel="noopener">Every set and mix<span>Linktree</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="fill" data-sc-copy data-sc-window="0.85 1 0.3 0" id="book">
+      <div class="contact-scrim"></div>
+      <div class="contact">
+        <h2>Contact me.</h2>
+        <ul class="contact__ways">
+          <li id="phoneWay" hidden><a id="phoneLink" href="#"><span class="k">Call or text</span><span class="v" id="phoneText"></span></a></li>
+          <li><a href="https://ig.me/m/abeille____" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="v">@abeille____</span></a></li>
+        </ul>
+        <p class="contact__credit">Rooftop footage: _nevs tv. Club footage: Below Grūnd. Photographs: @ceninvoncatlien2, @erikpel and @donxulio_.</p>
+      </div>
+    </div>
+  </div>
+
+  <div data-sc-spacer aria-hidden="true"></div>
+</main>
+
+<nav class="fader" aria-label="Jump through the night">
+  <ol id="faderList">
+    <li><button type="button" data-go="0"><span>Golden hour</span></button></li>
+    <li><button type="button" data-go="1"><span>Dusk</span></button></li>
+    <li><button type="button" data-go="2"><span>Listen</span></button></li>
+    <li><button type="button" data-go="3"><span>Abeille</span></button></li>
+    <li><button type="button" data-go="4"><span>Contact</span></button></li>
+  </ol>
+  <div class="fader__knob" id="knob"></div>
+</nav>
+
+<div class="sc-grain" aria-hidden="true"></div>
+
+<script src="scrollcraft.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------------------------------------------------------------- data --
+     Only real things go here. Add upcoming shows as { day: 'YYYY-MM-DD', where }.
+     While any are still ahead, the ticker announces them; once a date passes it
+     drops off by itself and the ticker goes back to where she has played. */
+  var NEXT_DATES = [{ day: '2026-11-10', where: 'Bossa Nova Civic Club, Brooklyn' }];
+  var PLAYED = ['Below Grūnd', 'Şahika Istanbul', 'Synctika Brooklyn', '_nevs tv rooftop', 'UNCURED TV', 'Subtle Radio', 'Noh Radio', 'Root Radio', 'Feel Groove Radio', 'The Black Room Radio', 'Radio Analogique'];
+  /* Her number, as she wants it shown (e.g. '(917) 555-0123'). Empty = hidden. */
+  var PHONE = '(941) 960-5347';
+
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var small = matchMedia('(max-width: 860px)');
+  var clamp01 = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
+  var smooth = function (x) { x = clamp01(x); return x * x * (3 - 2 * x); };
+
+  /* ------------------------------------------------------------- ticker -- */
+  var run = document.getElementById('tickerRun');
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0);
+  var upcoming = NEXT_DATES.filter(function (d) { return new Date(d.day + 'T23:59:59') >= startOfToday; });
+  var items;
+  if (upcoming.length) {
+    items = upcoming.map(function (d) {
+      var t = new Date(d.day + 'T12:00:00');
+      return '<span><i class="bullet" aria-hidden="true">L</i><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>';
+    });
+    while (items.length < 4) items = items.concat(items);   // one show still fills the strip
+  } else {
+    items = PLAYED.map(function (p) { return '<span><i class="bullet" aria-hidden="true">L</i><b>Played</b> ' + p + '</span>'; });
+  }
+  run.innerHTML = items.join('');
+  var twin = run.cloneNode(true); twin.setAttribute('aria-hidden', 'true'); twin.removeAttribute('id');
+  run.parentNode.appendChild(twin);
+
+  /* --------------------------------------------------------------- mount -- */
+  var api = ScrollCraft.mount(document);
+  var W = api.worlds[0];
+  function progress() { return clamp01((scrollY - W.top) / Math.max(innerHeight, 1) / W.total); }
+
+  /* ------------------------------------------------------------ the hero --
+     Real time, with sound available. The name sits between the sky and the
+     skyline: the canvas redraws the buildings from the live frame through a
+     mask so the towers and spires stand in front of the letters.            */
+  var hero = document.getElementById('hero');
+  var live = document.getElementById('live');
+  var sky = document.getElementById('skyline');
+  var sctx = sky.getContext('2d');
+  var nameEl = document.getElementById('heroName');
+  var SRC_W = 1920, SRC_H = 1080, BAND_TOP = 300, BAND_BOT = 528;
+  var NAME_SCALE = 0.7;   // the name sits smaller than the full sky band
+  var NAME_BOTTOM = 385;  // source-pixel line the name sits on: clear of her head, still behind the towers
+  // The hero is gone by 0.62 of the first leg, in whole-page progress.
+  var HERO_END = 0.62 * W.segs[0].w / W.total;
+  var heroOp = 1, soundOn = false, rect = { x: 0, y: 0, w: 0, h: 0, s: 1 };
+
+  live.src = small.matches ? 'assets/hero-m.mp4' : 'assets/hero.mp4';
+  if (!reduce) { var pp = live.play(); if (pp && pp.catch) pp.catch(function () {}); }
+
+  function coverRect() {
+    var vw = innerWidth, vh = innerHeight;
+    var s = Math.max(vw / SRC_W, vh / SRC_H);
+    rect = { w: SRC_W * s, h: SRC_H * s, x: (vw - SRC_W * s) / 2, y: (vh - SRC_H * s) / 2, s: s };
+    var dpr = Math.min(devicePixelRatio || 1, 2);
+    sky.width = Math.round(vw * dpr); sky.height = Math.round(vh * dpr);
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Fit the name into the band of open sky: two lines on a phone, one wide.
+    var twoLines = vw / vh < 1.1;
+    var fs = NAME_SCALE * (BAND_BOT - BAND_TOP) * s / ((twoLines ? 2 : 1) * 0.84);
+    nameEl.style.fontSize = fs + 'px';
+    var bw = 0;
+    Array.prototype.forEach.call(twoLines ? nameEl.querySelectorAll('.l') : [nameEl], function (l) {
+      var r = document.createRange(); r.selectNodeContents(l); bw = Math.max(bw, r.getBoundingClientRect().width);
+    });
+    if (bw > vw * 0.94) { fs = fs * vw * 0.94 / bw; nameEl.style.fontSize = fs + 'px'; }
+    nameEl.style.top = (rect.y + NAME_BOTTOM * s - nameEl.offsetHeight) + 'px';
+    var ms = rect.w + 'px ' + rect.h + 'px', mp = rect.x + 'px ' + rect.y + 'px';
+    sky.style.webkitMaskSize = sky.style.maskSize = ms;
+    sky.style.webkitMaskPosition = sky.style.maskPosition = mp;
+    drawSky();
+  }
+  // The buildings are the live frame drawn plainly, cut to the skyline by a CSS
+  // mask sized to the same cover rect. (Canvas compositing modes were ignored
+  // for video frames in Safari, which painted the whole frame over the name.)
+  function drawSky() {
+    if (heroOp < 0.002 || live.readyState < 2) return;
+    sctx.clearRect(0, 0, innerWidth, innerHeight);
+    sctx.drawImage(live, rect.x, rect.y, rect.w, rect.h);
+  }
+  var useRVFC = 'requestVideoFrameCallback' in live;
+  if (useRVFC) (function onFrame() { drawSky(); live.requestVideoFrameCallback(onFrame); })();
+  live.addEventListener('loadeddata', drawSky);
+
+  /* ------------------------------------------------------- Below Grūnd, live ---
+     Her club section plays as real footage, not scrubbed. The engine still fades
+     the segment in and out; this just plays or pauses with it, and lines up
+     with the Below Grūnd audio when the sound is on.                                   */
+  var roomSeg = document.getElementById('roomSeg');
+  var roomLive = document.createElement('video');
+  roomLive.muted = true; roomLive.loop = true; roomLive.playsInline = true; roomLive.preload = 'none';
+  roomLive.setAttribute('aria-hidden', 'true');
+  roomLive.className = 'seg-live';
+  roomLive.src = small.matches ? 'assets/bg-live-m.mp4' : 'assets/bg-live.mp4';
+  roomSeg.appendChild(roomLive);
+  var roomWasOn = false;
+  function updateRoom() {
+    var on = parseFloat(roomSeg.style.opacity || '0') > 0.01;
+    if (on === roomWasOn) return;
+    roomWasOn = on;
+    if (on) {
+      if (typeof clubA !== 'undefined' && soundOn && !clubA.paused) { try { roomLive.currentTime = clubA.currentTime % (roomLive.duration || 54); } catch (e) {} }
+      if (!reduce) { var p = roomLive.play(); if (p && p.catch) p.catch(function () {}); }
+    } else roomLive.pause();
+  }
+
+  /* -------------------------------------------------------------- sound --
+     Off until someone asks. Then Melis's rooftop set plays at normal speed
+     through sunset and dusk, and switches to her Below Grūnd set as that
+     footage arrives. Gain runs through Web Audio because iOS ignores
+     element.volume, and a crossfade that only works on desktop is not one.  */
+  var soundBtn = document.getElementById('sound');
+  var soundBar = document.getElementById('soundBar');
+  var melisA = document.getElementById('melisAudio');
+  var clubA = document.getElementById('clubAudio');
+  var actx = null, gM = null, gR = null;
+  var HANDOFF = 0.315;    // page progress where the Below Grūnd footage arrives: that set takes over
+  function mixFor(pr) {
+    var club = pr >= HANDOFF;
+    return { m: club ? 0 : 1, r: club ? (pr > 0.86 ? 0.7 : 1) : 0, club: club };
+  }
+  function setGain(g, el, v) {
+    if (g) g.gain.setTargetAtTime(v, actx.currentTime, 0.08);
+    else { try { el.volume = v; } catch (e) {} }
+  }
+  function playEl(el) { var p = el.play(); if (p && p.catch) p.catch(function () {}); }
+  function setSound(on) {
+    soundOn = on;
+    if (on && !actx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        try {
+          actx = new AC();
+          gM = actx.createGain(); gR = actx.createGain();
+          actx.createMediaElementSource(melisA).connect(gM).connect(actx.destination);
+          actx.createMediaElementSource(clubA).connect(gR).connect(actx.destination);
+        } catch (e) { actx = null; gM = gR = null; }
+      }
+    }
+    if (actx && actx.state === 'suspended') actx.resume();
+    if (on) {
+      // Start her track where the looping hero clip is, so it lines up on arrival.
+      if (melisA.paused && melisA.currentTime === 0) { try { melisA.currentTime = live.currentTime || 0; } catch (e) {} }
+      var m = mixFor(progress());
+      setGain(gM, melisA, 1); setGain(gR, clubA, m.r || 1);
+      lastSide = m.club; lastR = m.r;
+      if (m.club) { melisA.pause(); playEl(clubA); } else { clubA.pause(); playEl(melisA); }
+    } else { melisA.pause(); clubA.pause(); }
+    [soundBtn, soundBar].forEach(function (b) { b.setAttribute('aria-pressed', String(on)); });
+    soundBar.setAttribute('aria-label', on ? 'Sound off' : 'Sound on');
+    document.getElementById('soundLabel').textContent = on ? 'Sound off' : 'Sound on';
+    document.getElementById('soundWave').setAttribute('opacity', on ? '1' : '0.35');
+    soundBar.querySelector('.wave').setAttribute('opacity', on ? '1' : '0.35');
+  }
+  soundBtn.addEventListener('click', function () { setSound(!soundOn); });
+  soundBar.addEventListener('click', function () { setSound(!soundOn); });
+  // A straight switch, no crossfade: the rooftop set until the club part, then
+  // the Below Grūnd set from the top. Scrolling back up hands it back.
+  var lastSide = null, lastR = -1;
+  function applySide(m) {
+    if (m.club) {
+      melisA.pause();
+      try { clubA.currentTime = 0; } catch (e) {}
+      setGain(gR, clubA, m.r); playEl(clubA);
+    } else {
+      clubA.pause();
+      setGain(gM, melisA, 1); playEl(melisA);
+    }
+  }
+  function updateMix(pr) {
+    if (!soundOn) return;
+    var m = mixFor(pr);
+    if (m.club !== lastSide) { lastSide = m.club; lastR = m.r; applySide(m); return; }
+    if (m.club && m.r !== lastR) { lastR = m.r; setGain(gR, clubA, m.r); }
+  }
+
+  var vel = 0, lastY = scrollY, lastT = performance.now();
+
+  /* ------------------------------------------------------ the fader map -- */
+  var knob = document.getElementById('knob');
+  var faderList = document.getElementById('faderList');
+  var faderBtns = Array.prototype.slice.call(document.querySelectorAll('.fader button'));
+  var stops = [];
+  function measureStops() {
+    var r0 = faderList.getBoundingClientRect();
+    stops = faderBtns.map(function (b) { var r = b.getBoundingClientRect(); return r.left + r.width / 2 - r0.left; });
+  }
+  function goTo(i) {
+    var s = W.segs[i];
+    var y = W.top + (i === 0 ? 0 : (s.c0 + (i === W.segs.length - 1 ? s.w : s.w * 0.45))) * innerHeight;
+    scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+    if (i === W.segs.length - 1) setTimeout(function () { var l = document.querySelector('.contact__ways a'); if (l) l.focus({ preventScroll: true }); }, reduce ? 50 : 900);
+  }
+  document.querySelectorAll('[data-go]').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.preventDefault(); goTo(+b.getAttribute('data-go')); });
+  });
+  document.querySelector('.mark').addEventListener('click', function (e) { e.preventDefault(); scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  addEventListener('sc:waypoint', function (e) {
+    faderBtns.forEach(function (b, i) { b.setAttribute('aria-current', String(i === e.detail.index)); });
+  });
+  faderBtns[0].setAttribute('aria-current', 'true');
+
+  var mx = 0, my = 0;
+  if (fine && !reduce) addEventListener('pointermove', function (e) { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }, { passive: true });
+
+  /* ------------------------------------------------------- names, lean ---
+     Desktop only. As the mouse moves, the photos drift one way and her name
+     the other, a few pixels each, eased, so the room seems to have depth. */
+  var namesSeg = document.getElementById('namesSeg');
+  var soloName = document.querySelector('.name--solo');
+  var lean = { x: 0, y: 0 };
+  function updateLean() {
+    if (!fine || reduce) return;
+    if (parseFloat(namesSeg.style.opacity || '0') < 0.01) return;
+    lean.x += (mx - lean.x) * 0.08; lean.y += (my - lean.y) * 0.08;
+    var v = namesSeg.querySelector('video');
+    if (v) v.style.transform = 'translate3d(' + (lean.x * -22).toFixed(2) + 'px,' + (lean.y * -14).toFixed(2) + 'px,0) scale(1.04)';
+    if (soloName) soloName.style.transform = 'translate3d(' + (lean.x * 12).toFixed(2) + 'px,' + (lean.y * 8).toFixed(2) + 'px,0)';
+  }
+
+  /* --------------------------------------------------------------- loop --- */
+  var markEl = document.querySelector('.mark');
+  function frame(now) {
+    var dt = Math.min(64, now - lastT); lastT = now;
+    var y = scrollY; vel = vel * 0.85 + (y - lastY) * 0.15; lastY = y;
+    var pr = progress();
+
+    // Hero: fully present on arrival, gone by HERO_END, handing the frame to
+    // the scrubbed golden hour underneath it (same camera, same roof).
+    var hp = clamp01(pr / HERO_END);
+    heroOp = 1 - smooth((pr - 0.012) / (HERO_END - 0.012));
+    hero.style.opacity = heroOp.toFixed(3);
+    hero.style.visibility = heroOp > 0.002 ? 'visible' : 'hidden';
+    soundBtn.tabIndex = heroOp > 0.5 ? 0 : -1;
+    soundBar.classList.toggle('is-shown', heroOp < 0.5 || soundOn);
+    updateMix(pr);
+    updateRoom();
+    if (!reduce) {
+      // The name sinks into the city as you leave: it drops behind the towers
+      // while the skyline holds still. That difference is the depth.
+      nameEl.style.transform = 'translate3d(' + (mx * -10).toFixed(1) + 'px,' + (hp * rect.h * 0.1).toFixed(1) + 'px,0) scale(' + (1 - hp * 0.05).toFixed(4) + ')';
+    }
+    if (heroOp < 0.002) { if (!live.paused) live.pause(); }
+    else {
+      if (live.paused && !reduce) { var p = live.play(); if (p && p.catch) p.catch(function () {}); }
+      if (!useRVFC) drawSky();
+    }
+    markEl.style.setProperty('--bar-ink', heroOp > 0.5 ? 'var(--sc-accent-ink)' : 'var(--sc-ink)');
+    updateLean();
+
+
+    if (stops.length) {
+      var k = W.index || 0, lp = W.segs[k] ? W.segs[k].local : 0;
+      var a = stops[k], b = stops[Math.min(k + 1, stops.length - 1)];
+      knob.style.setProperty('--k', (k === stops.length - 1 ? a : a + (b - a) * lp).toFixed(1));
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function onResize() { coverRect(); measureStops(); }
+  addEventListener('resize', onResize);
+  addEventListener('load', function () { dispatchEvent(new Event('resize')); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { dispatchEvent(new Event('resize')); });
+  onResize();
+  requestAnimationFrame(frame);
+
+  /* ------------------------------------------------------------ contact --
+     One card, two ways to reach her. The phone row stays hidden until PHONE
+     is filled in, so the page never shows a placeholder number.            */
+  if (PHONE) {
+    document.getElementById('phoneText').textContent = PHONE;
+    document.getElementById('phoneLink').href = 'tel:+1' + PHONE.replace(/[^0-9]/g, '');
+    document.getElementById('phoneWay').hidden = false;
+  }
+
+  // Arriving from her page (index.html#contact): land straight on the card.
+  if (location.hash === '#contact') {
+    var land = function () { scrollTo(0, W.top + W.total * innerHeight); };
+    requestAnimationFrame(land); addEventListener('load', function () { setTimeout(land, 60); });
+  }
+})();
+</script>
+</body>
+</html>
