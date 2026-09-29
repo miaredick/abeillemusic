@@ -638,10 +638,13 @@ form.f {
     if (on) {
       // Start her track where the looping hero clip is, so it lines up on arrival.
       if (melisA.paused && melisA.currentTime === 0) { try { melisA.currentTime = live.currentTime || 0; } catch (e) {} }
+      // Start BOTH tracks inside this tap. Phones (iOS especially) refuse to
+      // start audio later from a scroll, so the switch below only changes
+      // volume and never has to call play() outside a user gesture.
       var m = mixFor(progress());
-      setGain(gM, melisA, 1); setGain(gR, clubA, m.r || 1);
       lastSide = m.club; lastR = m.r;
-      if (m.club) { melisA.pause(); playEl(clubA); } else { clubA.pause(); playEl(melisA); }
+      setGain(gM, melisA, m.club ? 0 : 1); setGain(gR, clubA, m.club ? m.r : 0);
+      playEl(melisA); playEl(clubA);
     } else { melisA.pause(); clubA.pause(); }
     [soundBtn, soundBar].forEach(function (b) { b.setAttribute('aria-pressed', String(on)); });
     soundBar.setAttribute('aria-label', on ? 'Sound off' : 'Sound on');
@@ -656,13 +659,14 @@ form.f {
   var lastSide = null, lastR = -1;
   function applySide(m) {
     if (m.club) {
-      melisA.pause();
       try { clubA.currentTime = 0; } catch (e) {}
-      setGain(gR, clubA, m.r); playEl(clubA);
+      setGain(gM, melisA, 0); setGain(gR, clubA, m.r);
     } else {
-      clubA.pause();
-      setGain(gM, melisA, 1); playEl(melisA);
+      setGain(gR, clubA, 0); setGain(gM, melisA, 1);
     }
+    // If a phone paused a track on its own (calls, lock screen), nudge it on.
+    if (melisA.paused) playEl(melisA);
+    if (clubA.paused) playEl(clubA);
   }
   function updateMix(pr) {
     if (!soundOn) return;
