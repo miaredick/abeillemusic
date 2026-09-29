@@ -309,7 +309,7 @@ form.f {
   .bar .btn { height: 40px; padding-inline: 0.9rem; font-size: 0.84rem; }
   .bar .bar__sound { width: 40px; padding: 0; }
   .hero__sub { font-size: var(--sc-t-sm); max-width: 30ch; }
-  .cue { left: auto; right: var(--sc-gutter); translate: none; bottom: calc(150px + env(safe-area-inset-bottom)); }
+  .cue { display: none; }
   .fader button span { display: none; }
   .fader button[aria-current="true"] span { display: inline; position: absolute; top: -14px; white-space: nowrap; }
   .fader button { position: relative; }
@@ -339,7 +339,9 @@ form.f {
   .f textarea { min-height: 56px; }
 }
 @media (max-width: 860px) and (orientation: portrait) {
-  .hero__foot { flex-direction: column; align-items: flex-start; bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .hero__foot { flex-direction: row; align-items: center; bottom: calc(84px + env(safe-area-inset-bottom)); gap: var(--sc-3); }
+  .hero__foot .sound { min-width: 0; width: 44px; padding: 0; }
+  .hero__foot .sound span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .hero__name .l { display: block; }
 }
 @media (max-width: 860px) and (max-height: 700px) { .book__lede .body { display: none; } }
@@ -528,6 +530,7 @@ form.f {
   var NAME_SCALE = 1.0;
   var NAME_SHIFT = 0;     // source px, one-line layout only
   var NAME_BOTTOM = 498;  // source-pixel line the name sits on: clear of her head, still behind the towers
+  var NAME_BOTTOM_PHONE = 300;  // phones: the tall crop has little skyline, so the name sits up in the sky
   // The hero is gone by 0.62 of the first leg, in whole-page progress.
   var HERO_END = 0.62 * W.segs[0].w / W.total;
   var heroOp = 1, soundOn = false, rect = { x: 0, y: 0, w: 0, h: 0, s: 1 };
@@ -552,7 +555,7 @@ form.f {
       var r = document.createRange(); r.selectNodeContents(l); bw = Math.max(bw, r.getBoundingClientRect().width);
     });
     if (bw > vw * 0.94) { fs = fs * vw * 0.94 / bw; nameEl.style.fontSize = fs + 'px'; }
-    nameEl.style.top = (rect.y + NAME_BOTTOM * s - nameEl.offsetHeight) + 'px';
+    nameEl.style.top = (rect.y + (small.matches ? NAME_BOTTOM_PHONE : NAME_BOTTOM) * s - nameEl.offsetHeight) + 'px';
     // On one line, nudge left so the tall tower covers the edge of the last E,
     // not the second L: the name stays readable and still sits behind the city.
     var shift = twoLines || small.matches ? 0 : NAME_SHIFT * s;
