@@ -18,15 +18,15 @@
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Doto:wght@700..900&family=Unbounded:wght@700..900&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Doto:wght@700..900&family=Unbounded:wght@700..900&family=Geist+Mono:wght@400..500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="scrollcraft.css">
 <style>
 :root {
   --sc-canvas: #0b0b0c;  --sc-surface: #151517;
   --sc-ink: #f3f1ec;     --sc-ink-soft: #aeaaa2;
   --sc-accent: #c8ff2e;  --sc-accent-ink: #0b0b0c;
-  --sc-font-display: "Archivo", system-ui, sans-serif;
-  --sc-font-text: "Geist", system-ui, sans-serif;
+  --sc-font-display: "Manrope", system-ui, sans-serif;
+  --sc-font-text: "Manrope", system-ui, sans-serif;
   --sc-font-mono: "Geist Mono", ui-monospace, monospace;
   --ticker-h: 36px;
   --led: #ff9f2e;          /* countdown-clock amber: the ticker only */
@@ -94,16 +94,16 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .btn {
   appearance: none; border: 0; cursor: pointer; text-decoration: none; white-space: nowrap;
   display: inline-flex; align-items: center; gap: 0.5em;
-  height: 44px; padding-inline: 1.15rem; border-radius: var(--sc-r-sm);
+  height: 44px; padding-inline: 1.15rem; border-radius: 0;
   background: var(--sc-accent); color: var(--sc-accent-ink);
   font: 600 0.9rem/1 var(--sc-font-text); letter-spacing: 0.01em;
-  box-shadow: var(--sc-e1);
+  box-shadow: none;
   transition: transform 140ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out);
 }
 @media (hover: hover) and (pointer: fine) { .btn:hover { background: color-mix(in oklab, var(--sc-accent) 86%, white); } }
 .btn:active { transform: scale(0.97); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn--ghost { background: color-mix(in oklab, var(--sc-canvas) 72%, transparent); color: var(--sc-ink); box-shadow: var(--sc-edge), var(--sc-e1); }
+.btn--ghost { background: color-mix(in oklab, var(--sc-canvas) 72%, transparent); color: var(--sc-ink); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--sc-ink) 22%, transparent); }
 @media (hover: hover) and (pointer: fine) { .btn--ghost:hover { background: color-mix(in oklab, var(--sc-canvas) 88%, transparent); } }
 
 /* The map. A fader: five stops on one channel, the knob is where you are. */
@@ -130,6 +130,10 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 }
 .fader button::before { content: ""; width: 2px; height: 8px; background: color-mix(in oklab, var(--sc-ink) 40%, transparent); }
 .fader button[aria-current="true"] { color: var(--sc-ink); }
+@media (min-width: 861px) {
+  .fader button span { opacity: 0; transition: opacity 180ms var(--sc-ease-out); }
+  .fader button[aria-current="true"] span, .fader:hover button span, .fader:focus-within button span { opacity: 1; }
+}
 @media (hover: hover) and (pointer: fine) { .fader button:hover { color: var(--sc-ink); } }
 
 /* --------------------------------------------------------------- hero ---- */
@@ -152,7 +156,7 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
   display: flex; align-items: end; justify-content: space-between; gap: var(--sc-5); pointer-events: none;
 }
 .hero__foot > * { pointer-events: auto; }
-.hero__sub { margin: 0; max-width: 38ch; font-size: var(--sc-t-lg); line-height: 1.4; text-wrap: balance; }
+.hero__sub { margin: 0; max-width: 34ch; font-size: var(--sc-t-base); line-height: 1.5; text-wrap: balance; }
 .sound { min-width: 8.5rem; justify-content: center; }
 .sound svg { width: 16px; height: 16px; }
 
@@ -190,12 +194,12 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .name__link { color: inherit; text-decoration: none; }
 @media (hover: hover) and (pointer: fine) { .name__link:hover .rule { width: 100%; } }
 .name h2 .rule { transition: width 260ms var(--sc-ease-out); }
-.name__more { display: inline-flex; align-items: center; gap: 0.5em; margin-top: var(--sc-4); min-height: 44px; padding: 0 1rem; border-radius: var(--sc-r-sm); background: var(--sc-accent); color: var(--sc-accent-ink); font: 600 0.9rem/1 var(--sc-font-text); text-decoration: none; box-shadow: var(--sc-e1); transition: transform 140ms var(--sc-ease-out); }
+.name__more { display: inline-flex; align-items: center; gap: 0.5em; margin-top: var(--sc-4); min-height: 44px; padding: 0 1rem; border-radius: 0; background: var(--sc-accent); color: var(--sc-accent-ink); font: 600 0.9rem/1 var(--sc-font-text); text-decoration: none; box-shadow: none; transition: transform 140ms var(--sc-ease-out); }
 .name__more:active { transform: scale(0.97); }
 .name p small { display: block; margin-top: var(--sc-2); color: var(--sc-ink-soft); font: 400 0.72rem/1.5 var(--sc-font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
 .listen { position: absolute; left: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 6vh); max-width: 38rem; }
-.listen__head { margin: 0; font: 700 var(--sc-t-2xl)/1.04 var(--sc-font-display); font-stretch: 82%; letter-spacing: var(--sc-track-snug); text-wrap: balance; }
+.listen__head { margin: 0; font: 700 var(--sc-t-xl)/1.1 var(--sc-font-display); font-stretch: 82%; letter-spacing: var(--sc-track-snug); text-wrap: balance; }
 .listen .body { color: var(--sc-ink); max-width: 44ch; }
 .listen__links { list-style: none; margin: var(--sc-6) 0 0; padding: 0; border-top: 1px solid var(--sc-hairline-strong); }
 .listen__links a { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sc-4); min-height: 44px; padding: var(--sc-3) 0; border-bottom: 1px solid var(--sc-hairline-strong); text-decoration: none; font: 600 var(--sc-t-lg)/1.2 var(--sc-font-display); font-stretch: 86%; }
@@ -281,7 +285,7 @@ form.f {
   .mark { font-size: 0.86rem; }
   .bar .btn { height: 40px; padding-inline: 0.9rem; font-size: 0.84rem; }
   .bar .bar__sound { width: 40px; padding: 0; }
-  .hero__sub { font-size: var(--sc-t-base); }
+  .hero__sub { font-size: var(--sc-t-sm); max-width: 30ch; }
   .fader button span { display: none; }
   .fader button[aria-current="true"] span { display: inline; position: absolute; top: -14px; white-space: nowrap; }
   .fader button { position: relative; }
@@ -295,7 +299,7 @@ form.f {
   .peak-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.7), transparent 18%), linear-gradient(to top, rgb(11 11 12 / 0.95) 0%, rgb(11 11 12 / 0.82) 30%, rgb(11 11 12 / 0.4) 48%, transparent 60%); }
   .rooms ul { font-size: clamp(2.2rem, 11vw, 3rem); }
   .listen { right: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 1rem); }
-  .listen__head { font-size: var(--sc-t-xl); }
+  .listen__head { font-size: var(--sc-t-lg); }
   .listen .body { font-size: var(--sc-t-sm); }
   .listen__links { margin-top: var(--sc-4); }
   .listen__links a { font-size: var(--sc-t-base); }
@@ -352,14 +356,14 @@ form.f {
       <img class="sc-world__poster" src="assets/dusk.jpg" alt="" decoding="async">
       <video data-sc-src="assets/dusk.mp4" data-sc-src-mobile="assets/dusk-m.mp4" muted playsinline></video>
     </div>
-    <div data-sc-segment data-sc-w="1.8" data-sc-linger="0.35" data-sc-waypoint="Abeille" id="namesSeg">
-      <img class="sc-world__poster" src="assets/peak.jpg" alt="" decoding="async">
-      <video data-sc-src="assets/peak.mp4" data-sc-src-mobile="assets/peak-m.mp4" muted playsinline></video>
-    </div>
-    <div data-sc-segment data-sc-w="1.5" data-sc-waypoint="Listen" id="roomSeg">
+    <div data-sc-segment data-sc-w="1.8" data-sc-waypoint="Abeille" id="roomSeg">
       <img class="sc-world__poster" src="assets/bg-live.jpg" alt="" decoding="async">
       <!-- No scrub clip here on purpose: her Below Grūnd set plays in real time (added by
            the page after mount, so the engine leaves it alone). -->
+    </div>
+    <div data-sc-segment data-sc-w="1.5" data-sc-linger="0.35" data-sc-waypoint="Listen" id="namesSeg">
+      <img class="sc-world__poster" src="assets/peak.jpg" alt="" decoding="async">
+      <video data-sc-src="assets/peak.mp4" data-sc-src-mobile="assets/peak-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.1" data-sc-waypoint="Contact me">
       <img class="sc-world__poster" src="assets/last.jpg" alt="" decoding="async">
@@ -392,8 +396,7 @@ form.f {
       <div class="peak-scrim"></div>
       <div class="name name--solo">
         <h2><a class="name__link" href="abeille.html">Abeille<span class="rule"></span></a></h2>
-        <p>Melis Eser. Groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.
-          <small>Below Grūnd · _nevs tv · UNCURED TV · Şahika Istanbul · Synctika</small></p>
+        <p>Melis Eser. Groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.</p>
         <a class="name__more" href="abeille.html">Watch Abeille play <span aria-hidden="true">→</span></a>
       </div>
     </div>
@@ -575,7 +578,7 @@ form.f {
   var melisA = document.getElementById('melisAudio');
   var clubA = document.getElementById('clubAudio');
   var actx = null, gM = null, gR = null;
-  var HANDOFF = 0.598;    // page progress where the Below Grūnd footage arrives: that set takes over
+  var HANDOFF = 0.318;    // page progress where the Below Grūnd footage arrives: that set takes over
   function mixFor(pr) {
     var club = pr >= HANDOFF;
     return { m: club ? 0 : 1, r: club ? (pr > 0.86 ? 0.7 : 1) : 0, club: club };
@@ -668,7 +671,7 @@ form.f {
      Desktop only. As the mouse moves, the photos drift one way and her name
      the other, a few pixels each, eased, so the room seems to have depth. */
   var namesSeg = document.getElementById('namesSeg');
-  var soloName = document.querySelector('.name--solo');
+  var soloName = document.querySelector('.listen');
   var lean = { x: 0, y: 0 };
   function updateLean() {
     if (!fine || reduce) return;
