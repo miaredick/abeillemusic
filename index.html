@@ -310,7 +310,8 @@ form.f {
   .bar .bar__sound { width: 40px; padding: 0; }
   .hero__sub { font-size: var(--sc-t-sm); max-width: 30ch; }
   .hero__name { letter-spacing: -0.045em; }
-  .cue { display: none; }
+  .cue { left: auto; right: calc(var(--sc-gutter) + 10px); translate: none; bottom: calc(142px + env(safe-area-inset-bottom)); gap: 8px; }
+  .cue__line { height: 28px; }
   .fader button span { display: none; }
   .fader button[aria-current="true"] span { display: inline; position: absolute; top: -14px; white-space: nowrap; }
   .fader button { position: relative; }
