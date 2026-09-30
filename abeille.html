@@ -38,7 +38,6 @@
     <video id="set" autoplay muted loop playsinline preload="auto" poster="assets/un-page.jpg" aria-label="Abeille (Melis Eser) playing her UNCURED set in a yellow-lit room">
       <source src="assets/un-page.mp4" type="video/mp4">
     </video>
-    <audio id="track" src="assets/nosignal-audio.m4a" preload="none" loop></audio>
     <div class="p-hero__scrim"></div>
     <div class="p-hero__foot">
       <div>
@@ -80,7 +79,7 @@
       <a class="other" href="index.html">Back to the night</a>
     </div>
   </section>
-  <p class="credit">Footage: UNCURED. Sound: No Signal. Photographs: @ceninvoncatlien2, @erikpel and @donxulio_.</p>
+  <p class="credit">Footage: UNCURED. Photographs: @ceninvoncatlien2, @erikpel and @donxulio_.</p>
 </main>
 
 <script>
@@ -134,11 +133,8 @@
   var v = document.getElementById('set'), btn = document.getElementById('sound'), on = false;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); }
   btn.addEventListener('click', function () {
-    // The sound is the No Signal set; the video underneath always stays muted.
-    on = !on;
-    var t = document.getElementById('track');
-    if (on) { var p = t.play(); if (p && p.catch) p.catch(function () {}); var q = v.play(); if (q && q.catch) q.catch(function () {}); }
-    else t.pause();
+    on = !on; v.muted = !on;
+    if (on) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
     btn.setAttribute('aria-pressed', String(on));
     document.getElementById('soundLabel').textContent = on ? 'Sound off' : 'Sound on';
     document.getElementById('wave').setAttribute('opacity', on ? '1' : '0.35');

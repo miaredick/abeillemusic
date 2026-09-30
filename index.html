@@ -461,7 +461,7 @@ form.f {
   </div>
 </header>
 <audio id="melisAudio" src="assets/melis-audio.m4a" preload="none" loop></audio>
-<audio id="clubAudio" src="assets/bg-audio.m4a" preload="none" loop></audio>
+<audio id="clubAudio" src="assets/nosignal-audio.m4a" preload="none" loop></audio>
 
 <main id="top" data-sc-mode="worldflight" data-sc-seam="0.16" data-sc-lerp="0.12">
 
@@ -771,7 +771,7 @@ form.f {
   var clubA = document.getElementById('clubAudio');
   var actx = null, gM = null, gR = null, analyser = null, bins = null;
   var npName = document.getElementById('npName');
-  function setNowPlaying(club) { npName.textContent = club ? 'Below Grūnd' : 'Rooftop · _nevs tv'; }
+  function setNowPlaying(club) { npName.textContent = club ? 'No Signal 079' : 'Rooftop · _nevs tv'; }
   var HANDOFF = 0.508;    // page progress where the Below Grūnd footage arrives: that set takes over
   function mixFor(pr) {
     var club = pr >= HANDOFF;
