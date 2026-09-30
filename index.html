@@ -602,6 +602,27 @@ form.f {
   var twin = run.cloneNode(true); twin.setAttribute('aria-hidden', 'true'); twin.removeAttribute('id');
   run.parentNode.appendChild(twin);
 
+  /* The strip moves by script, not a CSS animation: Safari measures a CSS
+     slide before the text is in and then sits still until something forces a
+     re-measure (a tap). Measuring the real width here works everywhere. */
+  (function () {
+    var track = run.parentNode, x = 0, last = performance.now(), w = 0, paused = false;
+    track.style.animation = 'none';
+    function measure() { w = run.getBoundingClientRect().width; }
+    measure(); addEventListener('resize', measure);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      track.parentNode.addEventListener('mouseenter', function () { paused = true; });
+      track.parentNode.addEventListener('mouseleave', function () { paused = false; });
+    }
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    (function step(now) {
+      var dt = Math.min(64, now - last); last = now;
+      if (!paused && w > 0) { x -= dt * 0.045; if (x <= -w) x += w; track.style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,0)'; }
+      requestAnimationFrame(step);
+    })(last);
+  })();
+
   /* --------------------------------------------------------------- mount -- */
   var api = ScrollCraft.mount(document);
   var W = api.worlds[0];
