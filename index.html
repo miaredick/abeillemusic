@@ -73,7 +73,7 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
   font: 700 0.8rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 0;
 }
 @keyframes tick { to { transform: translate3d(-50%, 0, 0); } }
-.ticker:hover .ticker__track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) { .ticker:hover .ticker__track { animation-play-state: paused; } }
 .ticker__track { opacity: calc(0.82 + var(--beat, 0) * 0.18); }
 
 .bar {
@@ -487,7 +487,7 @@ form.f {
        in the sky BEHIND the skyline. The canvas redraws the buildings from the same
        video frame through a mask, so the towers and spires cover the letters. -->
   <section class="hero" id="hero" aria-labelledby="heroName">
-    <video id="live" muted loop playsinline preload="auto" poster="assets/hero-poster.jpg"
+    <video id="live" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture preload="auto" poster="assets/hero-poster.jpg"
            aria-label="Abeille (Melis Eser) playing a rooftop set in Brooklyn at sunset"></video>
     <h1 class="hero__name" id="heroName"><span class="l">Abeille</span></h1>
     <canvas id="skyline" aria-hidden="true"></canvas>
@@ -632,6 +632,17 @@ form.f {
 
   live.src = small.matches ? 'assets/hero-m.mp4' : 'assets/hero.mp4';
   if (!reduce) { var pp = live.play(); if (pp && pp.catch) pp.catch(function () {}); }
+  /* iPhones in Low Power Mode (or saving data) won't start a video until the
+     visitor touches the page. Start it on the very first touch, including the
+     first scroll, and try again as soon as the video has data. */
+  function kickVideos() {
+    if (reduce) return;
+    [live].concat(Array.prototype.slice.call(document.querySelectorAll('.seg-live'))).forEach(function (v) {
+      if (v.paused && (v === live ? heroOp > 0.002 : parseFloat(v.parentNode.style.opacity || '0') > 0.01)) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    });
+  }
+  ['touchstart', 'touchend', 'pointerdown', 'keydown'].forEach(function (ev) { addEventListener(ev, kickVideos, { passive: true }); });
+  live.addEventListener('canplay', function () { if (!reduce && live.paused && heroOp > 0.002) { var p = live.play(); if (p && p.catch) p.catch(function () {}); } });
 
   function coverRect() {
     var vw = innerWidth, vh = innerHeight;
