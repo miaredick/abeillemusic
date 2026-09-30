@@ -74,6 +74,7 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 }
 @keyframes tick { to { transform: translate3d(-50%, 0, 0); } }
 .ticker:hover .ticker__track { animation-play-state: paused; }
+.ticker__track { opacity: calc(0.82 + var(--beat, 0) * 0.18); }
 
 .bar {
   position: fixed; top: var(--ticker-h); inset-inline: 0; height: var(--bar-h); z-index: 60;
@@ -91,6 +92,26 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .btn.bar__sound { width: 44px; padding: 0; flex: none; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 200ms var(--sc-ease-out), transform 140ms var(--sc-ease-out); }
 .bar__sound svg { width: 18px; height: 18px; flex: none; }
 .btn.bar__sound.is-shown { opacity: 1; pointer-events: auto; }
+/* 2. Now playing: while the sound is on, the bar's speaker becomes a small
+   spinning record with the set's name. Tap it to turn the sound off. */
+.np { display: none; align-items: center; gap: 10px; }
+.np__disc { width: 24px; height: 24px; border-radius: 50%; flex: none;
+  background: radial-gradient(circle, var(--sc-accent) 0 22%, #0d0d0e 23% 27%, var(--sc-canvas) 28% 30%, transparent 31%), repeating-radial-gradient(circle, #111 0 1px, #222 1.4px 2.2px);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.15); animation: spin 2.2s linear infinite; }
+.np__txt { display: grid; text-align: left; line-height: 1.1; }
+.np__txt small { font: 600 0.56rem/1 var(--sc-font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.np__txt b { font: 600 0.78rem/1.3 var(--sc-font-text); white-space: nowrap; }
+.btn.bar__sound.is-playing { width: auto; padding: 0 14px 0 10px; }
+.bar__sound.is-playing .np { display: inline-flex; }
+.bar__sound.is-playing .np__icon { display: none; }
+@media (max-width: 860px) { .bar__sound.is-playing .np__txt { display: none; } .btn.bar__sound.is-playing { padding: 0; width: 40px; justify-content: center; } }
+@media (prefers-reduced-motion: reduce) { .np__disc { animation: none; } }
+/* 3. Club light: on the dark slides a soft beam follows the mouse. */
+.spot { position: fixed; inset: 0; z-index: 25; pointer-events: none; opacity: 0; transition: opacity 500ms var(--sc-ease-out);
+  background: radial-gradient(34vmax 34vmax at var(--spx, 50%) var(--spy, 40%), rgb(255 255 255 / 0.13), rgb(255 255 255 / 0.04) 45%, transparent 70%);
+  mix-blend-mode: screen; }
+.spot.is-on { opacity: 1; }
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) { .spot { display: none; } }
 .btn {
   appearance: none; border: 0; cursor: pointer; text-decoration: none; white-space: nowrap;
   display: inline-flex; align-items: center; gap: 0.5em;
@@ -117,12 +138,14 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
   content: ""; position: absolute; left: 10%; right: 10%; top: 12px; height: 5px;
   background: var(--sc-accent); border-radius: 5px;
   box-shadow: 0 1px 6px rgb(0 0 0 / 0.35);
+  /* 1. the line pulses on the kick */
+  transform: scaleY(calc(1 + var(--beat, 0) * 0.9)); filter: brightness(calc(1 + var(--beat, 0) * 0.35));
 }
 .fader__knob {
   position: absolute; top: 8px; left: 0; width: 24px; height: 13px; margin-left: -12px; border-radius: 7px;
   background: var(--sc-canvas); box-shadow: inset 0 0 0 2px var(--sc-ink), 0 1px 4px rgb(0 0 0 / 0.5);
   z-index: 3;
-  transform: translate3d(calc(var(--k, 0) * 1px), 0, 0); will-change: transform; pointer-events: none;
+  transform: translate3d(calc(var(--k, 0) * 1px), calc(var(--beat, 0) * -4px), 0); will-change: transform; pointer-events: none;
 }
 .fader__knob::before, .fader__knob::after {
   content: ""; position: absolute; top: 4px; width: 4px; height: 4px; border-radius: 1px; background: var(--sc-accent);
@@ -183,11 +206,14 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 /* -------------------------------------------------------------- copy ----- */
 .seg-live { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
 .fill { position: absolute; inset: 0; }
+.mont-label { position: absolute; left: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 3vh); margin: 0; display: flex; align-items: center; gap: 12px;
+  font: 800 clamp(1rem, 1.4vw, 1.35rem)/1 "Doto", var(--sc-font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--led); text-shadow: 0 1px 6px rgb(0 0 0 / 0.6); }
+.mont-label__k { font: 700 0.62rem/1 var(--sc-font-mono); letter-spacing: 0.2em; color: var(--sc-canvas); background: var(--led); padding: 4px 6px; text-shadow: none; }
 /* A .fill block spans the whole screen, so it must never catch clicks itself,
    or a block on top swallows clicks meant for the one under it. Only its controls take clicks, and only while the engine has
    marked the block live. */
 .fill { pointer-events: none !important; }
-.fill[style*="pointer-events: auto"] :is(a, button, input, select, textarea, label, .boro, .book, form) { pointer-events: auto; }
+.fill[style*="pointer-events: auto"] :is(a, button, input, select, textarea, label, .boro, .book, form, .crate) { pointer-events: auto; }
 .kicker { font: 500 0.72rem/1.2 var(--sc-font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--sc-accent); margin: 0 0 var(--sc-3); }
 .say { margin: 0; font: 700 var(--sc-t-2xl)/1.02 var(--sc-font-display); font-stretch: 80%; letter-spacing: var(--sc-track-snug); text-wrap: balance; max-width: 16ch; }
 .body { margin: var(--sc-4) 0 0; color: var(--sc-ink-soft); max-width: 40ch; text-wrap: pretty; line-height: 1.66; }
@@ -217,7 +243,42 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .name__more:active { transform: scale(0.97); }
 .name p small { display: block; margin-top: var(--sc-2); color: var(--sc-ink-soft); font: 400 0.72rem/1.5 var(--sc-font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
-.listen { position: absolute; left: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 6vh); max-width: 38rem; }
+.listen { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 4vh); max-width: 78rem; }
+/* The crate: her sets as records. They sit still; click one and it starts
+   turning (and opens the set), so the one you are playing is the one that spins. */
+.crate { list-style: none; margin: var(--sc-6) 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--sc-5) var(--sc-5); max-width: min(78rem, 118vh); }
+.rec a { display: block; text-decoration: none; color: inherit; }
+.rec__disc {
+  position: relative; display: block; width: min(100%, 20vh); aspect-ratio: 1; border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 40%, rgb(255 255 255 / 0.06) 40.4%, transparent 41%),
+    repeating-radial-gradient(circle at 50% 50%, #111 0 1.2px, #1a1a1c 1.6px 2.6px),
+    #0d0d0e;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.55), inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  transition: transform 260ms var(--sc-ease-out);
+}
+.rec__disc::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 20deg, transparent 0 12%, rgb(255 255 255 / 0.09) 17%, transparent 24% 62%, rgb(255 255 255 / 0.07) 67%, transparent 74%); mix-blend-mode: screen; pointer-events: none; }
+.rec__label { position: absolute; left: 50%; top: 50%; width: 50%; height: 50%; translate: -50% -50%; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px #0d0d0e; }
+.rec__disc::after { content: ""; position: absolute; left: 50%; top: 50%; width: 3.4%; height: 3.4%; translate: -50% -50%; border-radius: 50%; background: var(--sc-canvas); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25); z-index: 1; }
+.rec__t { display: block; margin-top: var(--sc-3); font: 700 var(--sc-t-sm)/1.25 var(--sc-font-display); transition: color 160ms var(--sc-ease-out); }
+.rec__m { display: block; margin-top: 2px; font: 500 0.66rem/1.4 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.rec.is-playing .rec__disc { animation: spin 2.2s linear infinite; }
+.rec.is-playing .rec__t { color: var(--sc-accent); }
+@keyframes spin { to { rotate: 360deg; } }
+@media (hover: hover) and (pointer: fine) { .rec a:hover .rec__disc { transform: translateY(-6px); } .rec a:hover .rec__t { color: var(--sc-accent); } }
+.rec a:focus-visible { outline: none; }
+.rec a:focus-visible .rec__disc { outline: 2px solid var(--sc-accent); outline-offset: 5px; }
+.crate__more { display: flex; gap: var(--sc-6); margin: var(--sc-6) 0 0; }
+.crate__more a { font: 600 var(--sc-t-sm)/1 var(--sc-font-display); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--sc-ink) 35%, transparent); text-underline-offset: 0.3em; min-height: 44px; display: inline-flex; align-items: center; }
+@media (hover: hover) and (pointer: fine) { .crate__more a:hover { color: var(--sc-accent); } }
+@media (prefers-reduced-motion: reduce) { .rec.is-playing .rec__disc { animation: none; } }
+@media (min-width: 861px) and (max-height: 800px) {
+  .listen { top: calc(var(--ticker-h) + var(--bar-h) + 2vh); }
+  .listen__head { font-size: var(--sc-t-lg); }
+  .crate { margin-top: var(--sc-4); gap: var(--sc-4); }
+  .rec__disc { width: min(100%, 17vh); }
+  .crate__more { margin-top: var(--sc-3); }
+}
 .listen__head { margin: 0; font: 700 var(--sc-t-xl)/1.1 var(--sc-font-display); font-stretch: 82%; letter-spacing: var(--sc-track-snug); text-wrap: balance; }
 .listen .body { color: var(--sc-ink); max-width: 44ch; }
 .listen__links { list-style: none; margin: var(--sc-6) 0 0; padding: 0; border-top: 1px solid var(--sc-hairline-strong); }
@@ -230,7 +291,7 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .rooms .body { color: var(--sc-ink); }
 .gear { position: absolute; left: var(--sc-gutter); bottom: clamp(6rem, 14vh, 8.5rem); max-width: 26rem; }
 .gear .say { font-size: var(--sc-t-xl); max-width: 18ch; }
-.side-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(11 11 12 / 0.85), rgb(11 11 12 / 0.4) 45%, transparent 62%), linear-gradient(to top, rgb(11 11 12 / 0.8), transparent 40%); }
+.side-scrim { position: absolute; inset: 0; background: rgb(11 11 12 / 0.72); }
 
 /* The close. The lights are down, nothing moves, and the form is simple. */
 .book {
@@ -322,13 +383,19 @@ form.f {
   .name p { font-size: var(--sc-t-sm); }
   .peak-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.7), transparent 18%), linear-gradient(to top, rgb(11 11 12 / 0.96) 0%, rgb(11 11 12 / 0.9) 34%, rgb(11 11 12 / 0.55) 52%, transparent 68%); }
   .rooms ul { font-size: clamp(2.2rem, 11vw, 3rem); }
-  .listen { right: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 1rem); }
+  .listen { right: 0; top: calc(var(--ticker-h) + var(--bar-h) + 1.5rem); }
+  .listen .kicker, .listen__head, .crate__more { padding-right: var(--sc-gutter); }
+  .crate { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: var(--sc-4); padding: 4px var(--sc-gutter) 8px 0; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .crate::-webkit-scrollbar { display: none; }
+  .rec { flex: 0 0 38vw; scroll-snap-align: start; }
+  .rec__disc { width: 100%; }
+  .crate__more { flex-direction: column; gap: 0; }
   .listen__head { font-size: var(--sc-t-lg); }
   .listen .body { font-size: var(--sc-t-sm); }
   .listen__links { margin-top: var(--sc-4); }
   .listen__links a { font-size: var(--sc-t-base); }
   .gear { right: var(--sc-gutter); bottom: 90px; max-width: none; }
-  .side-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.93) 0%, rgb(11 11 12 / 0.88) 52%, rgb(11 11 12 / 0.4) 72%, transparent 88%); }
+  .side-scrim { background: rgb(11 11 12 / 0.8); }
   .dusk-line { right: var(--sc-gutter); }
   .book { grid-template-columns: 1fr; gap: var(--sc-4); align-content: start; top: calc(var(--ticker-h) + var(--bar-h) + 0.5rem); bottom: 64px; overflow-y: auto; overscroll-behavior: contain; }
   .book__lede h2 { font-size: var(--sc-t-2xl); }
@@ -363,7 +430,8 @@ form.f {
   <a class="mark" href="#top" aria-label="Abeille, back to the top">Abeille</a>
   <div class="bar__right">
     <button class="btn btn--ghost bar__sound" id="soundBar" type="button" aria-pressed="false" aria-label="Sound on">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" opacity="0.35"/></svg>
+      <span class="np" aria-hidden="true"><span class="np__disc"></span><span class="np__txt"><small>Now playing</small><b id="npName">Rooftop · _nevs tv</b></span></span>
+      <svg class="np__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" opacity="0.35"/></svg>
     </button>
     <a class="btn" href="#book" data-go="4">Contact me</a>
   </div>
@@ -387,7 +455,7 @@ form.f {
       <video data-sc-src="assets/peak.mp4" data-sc-src-mobile="assets/peak-m.mp4" muted playsinline></video>
     </div>
     <div data-sc-segment data-sc-w="1.8" data-sc-waypoint="Abeille" id="roomSeg">
-      <img class="sc-world__poster" src="assets/bg-live.jpg" alt="" decoding="async">
+      <img class="sc-world__poster" src="assets/montage.jpg" alt="" decoding="async">
       <!-- No scrub clip here on purpose: her Below Grūnd set plays in real time (added by
            the page after mount, so the engine leaves it alone). -->
     </div>
@@ -421,6 +489,7 @@ form.f {
 
     <div class="fill" data-sc-copy data-sc-window="0.535 0.805 0.16 0.14">
       <div class="peak-scrim"></div>
+      <p class="mont-label"><span class="mont-label__k">Live</span><span id="montName">Rooftop · _nevs tv</span></p>
       <div class="name name--solo">
         <h2><a class="name__link" href="abeille.html">Abeille<span class="rule"></span></a></h2>
         <p>Melis Eser. Groovy, hypnotic techno, left-field house, ambient and old-school breakbeat.</p>
@@ -432,13 +501,9 @@ form.f {
       <div class="side-scrim"></div>
       <div class="listen">
         <p class="kicker">Listen</p>
-        <h2 class="listen__head">Istanbul‑born, New York‑based.</h2>
-        <p class="body">ABEILLE is an Istanbul-born, New York-based DJ and emerging artist with five years of experience in the underground electronic music scene. Her sound moves through groovy, hypnotic techno, alongside left-field house, ambient, and old‑school breakbeat.</p>
-        <ul class="listen__links">
-          <li><a href="https://www.youtube.com/watch?v=L6z0ljJA3YI" target="_blank" rel="noopener">Below Grūnd, July 2026<span>YouTube</span></a></li>
-          <li><a href="https://www.youtube.com/watch?v=DPb9WRZc78A" target="_blank" rel="noopener">Rooftop set for _nevs tv<span>YouTube</span></a></li>
-          <li><a href="https://linktr.ee/abeille__" target="_blank" rel="noopener">Every set and mix<span>Linktree</span></a></li>
-        </ul>
+        <h2 class="listen__head">Pick a record. Every one is a full set.</h2>
+        <ul class="crate"><li class="rec"><a href="https://www.youtube.com/watch?v=L6z0ljJA3YI" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/L6z0ljJA3YI.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">Below Grūnd</span><span class="rec__m">July 2026</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=DPb9WRZc78A" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/DPb9WRZc78A.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">_nevs tv rooftop</span><span class="rec__m">Brooklyn, 2026</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=eTdJzm-oXk8" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/eTdJzm-oXk8.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">No Signal 079</span><span class="rec__m">2025</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=ifvtX1YEl3A" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/ifvtX1YEl3A.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">UNCURED UN071</span><span class="rec__m">July 2025</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=gxdqSInY3Dg" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/gxdqSInY3Dg.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">UNCURED UN031</span><span class="rec__m">June 2024</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=EYvnLXLC97U" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/EYvnLXLC97U.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">Feel Groove Radio</span><span class="rec__m">March 2025</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=hQ4GxA6n-4Q" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/hQ4GxA6n-4Q.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">The Black Room</span><span class="rec__m">June 2024</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=Tsun3VWme3M" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/Tsun3VWme3M.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">In-Store Session #78</span><span class="rec__m">2023</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=BRC4FZby_DQ" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/BRC4FZby_DQ.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">Live in Utero #7</span><span class="rec__m">2022</span></a></li><li class="rec"><a href="https://www.youtube.com/watch?v=3stzC5nvb1w" target="_blank" rel="noopener"><span class="rec__disc" aria-hidden="true"><img class="rec__label" src="assets/records/3stzC5nvb1w.jpg" alt="" loading="lazy" decoding="async" width="480" height="480"></span><span class="rec__t">Noh Radio</span><span class="rec__m">2022</span></a></li></ul>
+        <p class="crate__more"><a href="https://on.soundcloud.com/q1RW3MZ32kbxn4Dr8" target="_blank" rel="noopener">Radio mixes on SoundCloud</a><a href="https://linktr.ee/abeille__" target="_blank" rel="noopener">Every set and mix</a></p>
       </div>
     </div>
 
@@ -469,6 +534,7 @@ form.f {
   <div class="fader__knob" id="knob"></div>
 </nav>
 
+<div class="spot" id="spot" aria-hidden="true"></div>
 <div class="sc-grain" aria-hidden="true"></div>
 
 <script src="scrollcraft.js"></script>
@@ -481,7 +547,9 @@ form.f {
      While any are still ahead, the ticker announces them; once a date passes it
      drops off by itself and the ticker goes back to where she has played. */
   var NEXT_DATES = [{ day: '2026-11-10', where: 'Bossa Nova Civic Club, Brooklyn' }];
-  var PLAYED = ['Below Grūnd', 'Şahika Istanbul', 'Synctika Brooklyn', '_nevs tv rooftop', 'UNCURED TV', 'Subtle Radio', 'Noh Radio', 'Root Radio', 'Feel Groove Radio', 'The Black Room Radio', 'Radio Analogique'];
+  /* Recent shows worth shouting about. Each shows for 45 days after the date. */
+  var RECENT = [{ day: '2026-09-25', where: 'Green Room NYC with Impulse Control' }];
+  var PLAYED = ['Green Room NYC', 'Below Grūnd', 'Şahika Istanbul', 'Synctika Brooklyn', '_nevs tv rooftop', 'UNCURED TV', 'Subtle Radio', 'Noh Radio', 'Root Radio', 'Feel Groove Radio', 'The Black Room Radio', 'Radio Analogique'];
 
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -501,7 +569,14 @@ form.f {
       var t = new Date(d.day + 'T12:00:00');
       return '<span><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>';
     });
-    while (items.length < 4) items = items.concat(items);   // one show still fills the strip
+  }
+  var recent = RECENT.filter(function (d) { var t = new Date(d.day + 'T12:00:00'); return startOfToday - t < 45 * 864e5 && t <= new Date(); })
+    .map(function (d) { var t = new Date(d.day + 'T12:00:00'); return '<span><b>Last played</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>'; });
+  if (upcoming.length || recent.length) {
+    var mix = []; var n = Math.max(upcoming.length ? items.length : 0, recent.length);
+    for (var i = 0; i < n; i++) { if (upcoming.length) mix.push(items[i % items.length]); if (recent[i]) mix.push(recent[i]); }
+    items = mix;
+    while (items.length < 4) items = items.concat(items);   // a show or two still fills the strip
   } else {
     items = PLAYED.map(function (p) { return '<span><b>Played</b> ' + p + '</span>'; });
   }
@@ -589,17 +664,33 @@ form.f {
   roomLive.muted = true; roomLive.loop = true; roomLive.playsInline = true; roomLive.preload = 'none';
   roomLive.setAttribute('aria-hidden', 'true');
   roomLive.className = 'seg-live';
-  roomLive.src = small.matches ? 'assets/bg-live-m.mp4' : 'assets/bg-live.mp4';
+  roomLive.src = small.matches ? 'assets/montage-m.mp4' : 'assets/montage.mp4';
   roomSeg.appendChild(roomLive);
-  var roomWasOn = false;
-  function updateRoom() {
+  /* The reel is eight two-second shots from her sets. While the slide is on
+     screen it plays and jumps to the next shot on every kick when the sound
+     is on (steady club tempo when it's off), flashing up each set's name. */
+  var MONT = ['Rooftop · _nevs tv', 'Below Grūnd', 'Noh Radio', 'UNCURED', 'Live in Utero · KOF', 'No Signal', 'In-Store Session · Vamonos', 'The Black Room'];
+  var montName = document.getElementById('montName');
+  var roomWasOn = false, shot = 1, lastCut = 0, wasBeat = false;
+  function cutTo(i) {
+    shot = i % MONT.length;
+    try { roomLive.currentTime = shot * 2 + 0.05; } catch (e) {}
+    montName.textContent = MONT[shot];
+  }
+  function updateRoom(now) {
     var on = parseFloat(roomSeg.style.opacity || '0') > 0.01;
-    if (on === roomWasOn) return;
-    roomWasOn = on;
-    if (on) {
-      if (typeof clubA !== 'undefined' && soundOn && !clubA.paused) { try { roomLive.currentTime = clubA.currentTime % (roomLive.duration || 54); } catch (e) {} }
-      if (!reduce) { var p = roomLive.play(); if (p && p.catch) p.catch(function () {}); }
-    } else roomLive.pause();
+    if (on !== roomWasOn) {
+      roomWasOn = on;
+      if (on) { cutTo(shot); if (!reduce) { var p = roomLive.play(); if (p && p.catch) p.catch(function () {}); } lastCut = now || performance.now(); }
+      else roomLive.pause();
+    }
+    if (!on || reduce || !now) return;
+    var hit = beat > 0.28, gap = now - lastCut;
+    // Cut on each hit (a kick in the music, or a beat of scrolling); if nothing
+    // is hitting, keep a slow steady tempo so the reel never freezes.
+    var steady = (soundOn && analyser) ? 950 : 800;
+    if ((hit && !wasBeat && gap > 300) || gap > steady) { cutTo(shot + 1); lastCut = now; }
+    wasBeat = hit;
   }
 
   /* -------------------------------------------------------------- sound --
@@ -611,7 +702,9 @@ form.f {
   var soundBar = document.getElementById('soundBar');
   var melisA = document.getElementById('melisAudio');
   var clubA = document.getElementById('clubAudio');
-  var actx = null, gM = null, gR = null;
+  var actx = null, gM = null, gR = null, analyser = null, bins = null;
+  var npName = document.getElementById('npName');
+  function setNowPlaying(club) { npName.textContent = club ? 'Below Grūnd' : 'Rooftop · _nevs tv'; }
   var HANDOFF = 0.508;    // page progress where the Below Grūnd footage arrives: that set takes over
   function mixFor(pr) {
     var club = pr >= HANDOFF;
@@ -632,6 +725,10 @@ form.f {
           gM = actx.createGain(); gR = actx.createGain();
           actx.createMediaElementSource(melisA).connect(gM).connect(actx.destination);
           actx.createMediaElementSource(clubA).connect(gR).connect(actx.destination);
+          // 1. listen to what's actually playing, so the page can move to it
+          analyser = actx.createAnalyser(); analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.55;
+          gM.connect(analyser); gR.connect(analyser);
+          bins = new Uint8Array(analyser.frequencyBinCount);
         } catch (e) { actx = null; gM = gR = null; }
       }
     }
@@ -649,6 +746,8 @@ form.f {
     } else { melisA.pause(); clubA.pause(); }
     [soundBtn, soundBar].forEach(function (b) { b.setAttribute('aria-pressed', String(on)); });
     soundBar.setAttribute('aria-label', on ? 'Sound off' : 'Sound on');
+    soundBar.classList.toggle('is-playing', on);
+    if (on) setNowPlaying(lastSide);
     document.getElementById('soundLabel').textContent = on ? 'Sound off' : 'Sound on';
     document.getElementById('soundWave').setAttribute('opacity', on ? '1' : '0.35');
     soundBar.querySelector('.wave').setAttribute('opacity', on ? '1' : '0.35');
@@ -659,6 +758,7 @@ form.f {
   // the Below Grūnd set from the top. Scrolling back up hands it back.
   var lastSide = null, lastR = -1;
   function applySide(m) {
+    setNowPlaying(m.club);
     if (m.club) {
       try { clubA.currentTime = 0; } catch (e) {}
       setGain(gM, melisA, 0); setGain(gR, clubA, m.r);
@@ -677,6 +777,53 @@ form.f {
   }
 
   var vel = 0, lastY = scrollY, lastT = performance.now();
+
+  /* 1. the beat: bass energy against its own recent average, so a kick reads
+     as a spike whatever the volume. Eases back down between hits. */
+  var beat = 0, bassAvg = 0, docStyle = document.documentElement.style;
+  // Scrolling counts as beats too: every ~160px scrolled is a hit, so the page
+  // keeps time with your hand even with the sound off.
+  var scrollAcc = 0, beatY = scrollY, STEP = 160;
+  function updateBeat() {
+    var target = 0;
+    if (analyser && soundOn && !reduce) {
+      analyser.getByteFrequencyData(bins);
+      var sum = 0; for (var i = 1; i < 7; i++) sum += bins[i];   // roughly 40-250 Hz
+      var bass = sum / 6 / 255;
+      bassAvg = bassAvg * 0.94 + bass * 0.06;
+      target = Math.max(0, Math.min(1, (bass - bassAvg * 1.08) * 6));
+    }
+    if (!reduce) {
+      var dy = Math.abs(scrollY - beatY); beatY = scrollY;
+      if (dy < innerHeight) {                 // ignore jumps (fader clicks, reloads)
+        scrollAcc += dy;
+        if (scrollAcc >= STEP) { scrollAcc %= STEP; target = Math.max(target, 0.85); }
+      }
+    }
+    beat = target > beat ? target : beat * 0.8;
+    docStyle.setProperty('--beat', beat.toFixed(3));
+  }
+
+  /* 3. club light on the Listen and Contact slides (desktop only) */
+  var spot = document.getElementById('spot');
+  function updateSpot() {
+    if (!fine || reduce) return;
+    var k = W.index || 0;
+    spot.classList.toggle('is-on', (k === 2 || k === 4) && heroOp < 0.01);
+    spot.style.setProperty('--spx', ((mx + 0.5) * 100).toFixed(1) + '%');
+    spot.style.setProperty('--spy', ((my + 0.5) * 100).toFixed(1) + '%');
+  }
+
+  /* 4. scroll speed shows in the texture: fast scrolling lifts the grain and
+     adds a touch of blur; standing still, it all settles back. */
+  var grain = document.querySelector('.sc-grain'), stage = document.querySelector('[data-sc-world]'), speed = 0, lastBlur = -1;
+  function updateSpeed() {
+    if (reduce) return;
+    speed = speed * 0.9 + Math.min(1, Math.abs(vel) / 38) * 0.1;
+    grain.style.opacity = (0.045 + speed * 0.13).toFixed(3);
+    var bl = fine ? Math.round(speed * 12) / 10 : 0;   // up to ~1.2px, desktop only
+    if (bl !== lastBlur) { stage.style.filter = bl > 0.15 ? 'blur(' + bl + 'px)' : ''; lastBlur = bl; }
+  }
 
   /* ------------------------------------------------------ the fader map -- */
   var knob = document.getElementById('knob');
@@ -709,7 +856,7 @@ form.f {
      Desktop only. As the mouse moves, the photos drift one way and her name
      the other, a few pixels each, eased, so the room seems to have depth. */
   var namesSeg = document.getElementById('namesSeg');
-  var soloName = document.querySelector('.listen');
+  var soloName = null;
   var lean = { x: 0, y: 0 };
   function updateLean() {
     if (!fine || reduce) return;
@@ -737,7 +884,7 @@ form.f {
     soundBtn.tabIndex = heroOp > 0.5 ? 0 : -1;
     soundBar.classList.toggle('is-shown', heroOp < 0.5 || soundOn);
     updateMix(pr);
-    updateRoom();
+    updateRoom(now);
     if (!reduce) {
       // The name sinks into the city as you leave: it drops behind the towers
       // while the skyline holds still. That difference is the depth.
@@ -750,6 +897,7 @@ form.f {
     }
     markEl.style.setProperty('--bar-ink', heroOp > 0.5 ? 'var(--sc-accent-ink)' : 'var(--sc-ink)');
     updateLean();
+    updateBeat(); updateSpot(); updateSpeed();
     cueEl.classList.toggle('is-gone', scrollY > 24);
 
 
@@ -767,6 +915,18 @@ form.f {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { dispatchEvent(new Event('resize')); });
   onResize();
   requestAnimationFrame(frame);
+
+  /* -------------------------------------------------------------- crate ---
+     Records sit still. Clicking one opens the set in a new tab and starts that
+     record turning, so when you come back, the one you played is spinning.
+     The page's own sound stops, so it doesn't play over the set.           */
+  Array.prototype.forEach.call(document.querySelectorAll('.rec a'), function (a) {
+    a.addEventListener('click', function () {
+      document.querySelectorAll('.rec.is-playing').forEach(function (r) { r.classList.remove('is-playing'); });
+      a.parentNode.classList.add('is-playing');
+      if (soundOn) setSound(false);
+    });
+  });
 
   // Arriving from her page (index.html#contact): land straight on the card.
   if (location.hash === '#contact') {

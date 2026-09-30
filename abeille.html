@@ -63,12 +63,12 @@
 
   <section class="p-sec played" aria-labelledby="playedHead">
     <h2 id="playedHead">Played at</h2>
-    <ul class="gigs"><li><span class="g-name">Bossa Nova Civic Club</span><span class="g-where">Brooklyn</span><span class="g-note">Upcoming: November 10</span></li><li><span class="g-name">Below Grūnd</span><span class="g-where">Brooklyn</span><span class="g-note">July 10, 2026</span></li><li><span class="g-name">Şahika</span><span class="g-where">Istanbul</span><span class="g-note">Back-to-back set</span></li><li><span class="g-name">Synctika 001</span><span class="g-where">Brooklyn</span><span class="g-note">First session</span></li><li><span class="g-name">_nevs tv</span><span class="g-where">Brooklyn rooftop</span><span class="g-note">Sunset set</span></li><li><span class="g-name">UNCURED TV</span><span class="g-where">Stream</span><span class="g-note">Hypnotic techno mixes</span></li><li><span class="g-name">Fader.Locals at 8x8</span><span class="g-where">St. Petersburg, FL</span><span class="g-note"></span></li><li><span class="g-name">Sector.fm</span><span class="g-where">Radio</span><span class="g-note">Guest set</span></li><li><span class="g-name">Subtle Radio · Noh Radio · Root Radio</span><span class="g-where">Radio</span><span class="g-note">Guest mixes</span></li></ul>
+    <ul class="gigs"><li><span class="g-name">Bossa Nova Civic Club</span><span class="g-where">Brooklyn</span><span class="g-note">Upcoming: November 10</span></li><li><span class="g-name">Green Room NYC</span><span class="g-where">Brooklyn</span><span class="g-note">Impulse Control, September 2026</span></li><li><span class="g-name">Below Grūnd</span><span class="g-where">Brooklyn</span><span class="g-note">July 10, 2026</span></li><li><span class="g-name">Şahika</span><span class="g-where">Istanbul</span><span class="g-note">Back-to-back set</span></li><li><span class="g-name">Synctika 001</span><span class="g-where">Brooklyn</span><span class="g-note">First session</span></li><li><span class="g-name">_nevs tv</span><span class="g-where">Brooklyn rooftop</span><span class="g-note">Sunset set</span></li><li><span class="g-name">UNCURED TV</span><span class="g-where">Stream</span><span class="g-note">Hypnotic techno mixes</span></li><li><span class="g-name">Fader.Locals at 8x8</span><span class="g-where">St. Petersburg, FL</span><span class="g-note"></span></li><li><span class="g-name">Sector.fm</span><span class="g-where">Radio</span><span class="g-note">Guest set</span></li><li><span class="g-name">Subtle Radio · Noh Radio · Root Radio</span><span class="g-where">Radio</span><span class="g-note">Guest mixes</span></li></ul>
   </section>
 
   <section class="p-sec listen" aria-labelledby="listenHead">
     <h2 id="listenHead">Listen</h2>
-    <ul class="links"><li><a href="https://www.youtube.com/watch?v=gxdqSInY3Dg" target="_blank" rel="noopener">UNCURED set, June 2024<span>YouTube</span></a></li><li><a href="https://linktr.ee/abeille__" target="_blank" rel="noopener">All her sets and mixes<span>linktr.ee/abeille__</span></a></li><li><a href="https://www.youtube.com/watch?v=DPb9WRZc78A" target="_blank" rel="noopener">Rooftop set for _nevs tv<span>YouTube</span></a></li><li><a href="https://www.instagram.com/abeille____/" target="_blank" rel="noopener">Instagram<span>@abeille____</span></a></li></ul>
+    <ul class="links"><li><a href="https://on.soundcloud.com/q1RW3MZ32kbxn4Dr8" target="_blank" rel="noopener">Radio mixes on SoundCloud<span>SoundCloud</span></a></li><li><a href="https://linktr.ee/abeille__" target="_blank" rel="noopener">Every set and mix<span>linktr.ee/abeille__</span></a></li><li><a href="https://www.instagram.com/abeille____/" target="_blank" rel="noopener">Instagram<span>@abeille____</span></a></li></ul>
   </section>
 
   <section class="p-sec p-close" aria-labelledby="closeHead">
@@ -84,14 +84,22 @@
 
 <script>
 (function () {
-  var PLAYED = ["Below Grūnd", "Şahika Istanbul", "Synctika Brooklyn", "_nevs tv rooftop", "UNCURED TV", "Subtle Radio", "Noh Radio", "Root Radio", "Feel Groove Radio", "The Black Room Radio", "Radio Analogique"];
+  var PLAYED = ["Green Room NYC", "Below Grūnd", "Şahika Istanbul", "Synctika Brooklyn", "_nevs tv rooftop", "UNCURED TV", "Subtle Radio", "Noh Radio", "Root Radio", "Feel Groove Radio", "The Black Room Radio", "Radio Analogique"];
   var NEXT_DATES = [{ day: '2026-11-10', where: 'Bossa Nova Civic Club, Brooklyn' }];
+  var RECENT = [{ day: '2026-09-25', where: 'Green Room NYC with Impulse Control' }];
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0);
   var upcoming = NEXT_DATES.filter(function (d) { return new Date(d.day + 'T23:59:59') >= startOfToday; });
   var items;
   if (upcoming.length) {
     items = upcoming.map(function (d) { var t = new Date(d.day + 'T12:00:00'); return '<span><b>Upcoming</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>'; });
+  }
+  var recent = RECENT.filter(function (d) { var t = new Date(d.day + 'T12:00:00'); return startOfToday - t < 45 * 864e5 && t <= new Date(); })
+    .map(function (d) { var t = new Date(d.day + 'T12:00:00'); return '<span><b>Last played</b> ' + MON[t.getMonth()] + ' ' + t.getDate() + ' · ' + d.where + '</span>'; });
+  if (upcoming.length || recent.length) {
+    var mix = []; var n = Math.max(upcoming.length ? items.length : 0, recent.length);
+    for (var i = 0; i < n; i++) { if (upcoming.length) mix.push(items[i % items.length]); if (recent[i]) mix.push(recent[i]); }
+    items = mix;
     while (items.length < 4) items = items.concat(items);
   } else {
     items = PLAYED.map(function (p) { return '<span><b>Played</b> ' + p + '</span>'; });

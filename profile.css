@@ -145,3 +145,45 @@ img, video { display: block; max-width: 100%; }
   .ticker__track { animation: none; }
   .ticker { overflow-x: auto; }
 }
+
+/* ------------------------------------------------------------- the crate --
+   Each set is a record: black vinyl with real-looking grooves, the set's own
+   cover art on the centre label. They turn slowly all the time; hovering one
+   lifts it and spins it up to speed. The whole record is the link. */
+.crate__hint { margin: calc(-1 * var(--sc-4)) 0 var(--sc-7); color: var(--sc-ink-soft); }
+.crate { list-style: none; margin: 0 0 var(--sc-8); padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--sc-7) var(--sc-6); }
+.rec a { display: block; text-decoration: none; color: inherit; }
+.rec__disc {
+  position: relative; display: block; aspect-ratio: 1; border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 40%, rgb(255 255 255 / 0.06) 40.4%, transparent 41%),
+    repeating-radial-gradient(circle at 50% 50%, #111 0 1.2px, #1a1a1c 1.6px 2.6px),
+    #0d0d0e;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.5), inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  animation: spin 9s linear infinite;
+  transition: transform 260ms var(--sc-ease-out);
+}
+.rec__disc::before {       /* the light catching the grooves */
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 20deg, transparent 0 12%, rgb(255 255 255 / 0.09) 17%, transparent 24% 62%, rgb(255 255 255 / 0.07) 67%, transparent 74%);
+  mix-blend-mode: screen; pointer-events: none;
+}
+.rec__label {
+  position: absolute; left: 50%; top: 50%; width: 50%; height: 50%; translate: -50% -50%;
+  border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px #0d0d0e;
+}
+.rec__disc::after {        /* spindle hole */
+  content: ""; position: absolute; left: 50%; top: 50%; width: 3.4%; height: 3.4%; translate: -50% -50%;
+  border-radius: 50%; background: var(--sc-canvas); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+.rec__t { display: block; margin-top: var(--sc-4); font: 700 var(--sc-t-base)/1.25 var(--sc-font-display); transition: color 160ms var(--sc-ease-out); }
+.rec__m { display: block; margin-top: 4px; font: 500 0.72rem/1.4 var(--sc-font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--sc-ink-soft); }
+@keyframes spin { to { rotate: 360deg; } }
+@media (hover: hover) and (pointer: fine) {
+  .rec a:hover .rec__disc { transform: translateY(-8px); animation-duration: 1.8s; }
+  .rec a:hover .rec__t { color: var(--sc-accent); }
+}
+.rec a:focus-visible { outline: none; }
+.rec a:focus-visible .rec__disc { outline: 2px solid var(--sc-accent); outline-offset: 6px; }
+@media (max-width: 860px) { .crate { grid-template-columns: repeat(2, 1fr); gap: var(--sc-6) var(--sc-4); } }
+@media (prefers-reduced-motion: reduce) { .rec__disc { animation: none; } }
