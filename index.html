@@ -199,6 +199,12 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 @keyframes cue { from { transform: translateY(-16px); } to { transform: translateY(64px); } }
 .cue.is-gone { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .cue__line::after { animation: none; top: 24px; } }
+.hero__play { position: absolute; left: 50%; top: 58%; translate: -50% -50%; width: 72px; height: 72px; border: 0; border-radius: 50%; cursor: pointer;
+  background: rgb(11 11 12 / 0.55); color: var(--sc-ink); box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.5); display: none; place-items: center; pointer-events: auto; z-index: 3;
+  transition: transform 140ms var(--sc-ease-out); }
+.hero__play svg { width: 28px; height: 28px; margin-left: 4px; }
+.hero__play:active { transform: scale(0.95); }
+.hero.is-blocked .hero__play { display: grid; }
 .sound { min-width: 8.5rem; justify-content: center; }
 .sound svg { width: 16px; height: 16px; }
 
@@ -491,6 +497,7 @@ form.f {
            aria-label="Abeille (Melis Eser) playing a rooftop set in Brooklyn at sunset"></video>
     <h1 class="hero__name" id="heroName"><span class="l">Abeille</span></h1>
     <canvas id="skyline" aria-hidden="true"></canvas>
+    <button class="hero__play" id="heroPlay" type="button" aria-label="Play video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></button>
     <div class="hero__scrim"></div>
     <div class="cue" id="cue" aria-hidden="true"><span class="cue__label">Scroll</span><span class="cue__line"></span></div>
     <div class="hero__foot">
@@ -652,7 +659,17 @@ form.f {
   var heroOp = 1, soundOn = false, rect = { x: 0, y: 0, w: 0, h: 0, s: 1 };
 
   live.src = small.matches ? 'assets/hero-m.mp4' : 'assets/hero.mp4';
-  if (!reduce) { var pp = live.play(); if (pp && pp.catch) pp.catch(function () {}); }
+  if (small.matches) { live.poster = 'assets/hero-poster-m.jpg'; live.style.backgroundImage = 'url(assets/hero-poster-m.jpg)'; }
+  /* If the phone blocks autoplay (Low Power Mode, or Safari's Auto-Play set to
+     Never), show a play button instead of a frozen frame. */
+  var heroPlay = document.getElementById('heroPlay');
+  function tryHero() {
+    var pp = live.play();
+    if (pp && pp.then) pp.then(function () { hero.classList.remove('is-blocked'); }, function (e) { if (e && e.name === 'NotAllowedError') hero.classList.add('is-blocked'); });
+  }
+  live.addEventListener('playing', function () { hero.classList.remove('is-blocked'); });
+  heroPlay.addEventListener('click', function () { tryHero(); kickVideos(); });
+  if (!reduce) tryHero();
   /* iPhones in Low Power Mode (or saving data) won't start a video until the
      visitor touches the page. Start it on the very first touch, including the
      first scroll, and try again as soon as the video has data. */
