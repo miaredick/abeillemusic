@@ -196,7 +196,7 @@ a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px
 .cue__label { writing-mode: vertical-rl; font: 700 0.68rem/1 var(--sc-font-mono); letter-spacing: 0.32em; text-transform: uppercase; color: var(--sc-ink); text-shadow: 0 0 1px rgb(0 0 0 / 0.6), 0 1px 6px rgb(0 0 0 / 0.55); }
 .cue__line { position: relative; width: 1px; height: 64px; background: color-mix(in oklab, var(--sc-ink) 45%, transparent); box-shadow: 0 0 3px rgb(0 0 0 / 0.4); overflow: hidden; }
 .cue__line::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 16px; background: var(--sc-ink); animation: cue 1.8s var(--sc-ease-in-out) infinite; }
-@keyframes cue { from { transform: translateY(-16px); } to { transform: translateY(64px); } }
+@keyframes cue { from { transform: translateY(64px); } to { transform: translateY(-16px); } }
 .cue.is-gone { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .cue__line::after { animation: none; top: 24px; } }
 .hero__play { position: absolute; left: 50%; top: 58%; translate: -50% -50%; width: 72px; height: 72px; border: 0; border-radius: 50%; cursor: pointer;
