@@ -134,7 +134,7 @@ img, video { display: block; max-width: 100%; }
   .back { display: none; }
   .bar .btn { height: 40px; padding-inline: 0.9rem; font-size: 0.84rem; }
   .p-hero__foot { flex-direction: column; align-items: flex-start; }
-  .p-hero video { object-position: 50% 50%; }
+  .p-hero video { object-position: 38% 50%; }
   .p-hero h1 { font-size: clamp(2.4rem, 13vw, 4.4rem); }
   .p-hero__who { font-size: var(--sc-t-base); }
   .p-about { grid-template-columns: 1fr; }
