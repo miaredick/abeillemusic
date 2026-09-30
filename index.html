@@ -414,6 +414,22 @@ form.f {
   .hero__name .l { display: block; }
 }
 @media (max-width: 860px) and (max-height: 700px) { .book__lede .body { display: none; } }
+/* small phones (iPhone SE and similar): records five to a row, tighter type,
+   and a contact card that never slides under the bar */
+@media (max-width: 860px) and (max-height: 700px) {
+  .listen { top: calc(var(--ticker-h) + var(--bar-h) + 0.5rem); }
+  .listen .kicker { margin-bottom: 4px; }
+  .listen__head { font-size: var(--sc-t-base); }
+  .crate { gap: 10px 8px; margin-top: 10px; }
+  .rec { flex-basis: calc((100% - 32px) / 5); }
+  .rec__t { font-size: 0.6rem; }
+  .crate__more { margin-top: 8px; }
+  .crate__more a { min-height: 36px; font-size: 0.72rem; }
+}
+@media (max-width: 860px) {
+  .contact { top: calc(var(--ticker-h) + var(--bar-h) + 1.5rem); transform: none; }
+  .contact__ways .v { font-size: clamp(1rem, 5.2vw, 1.35rem); overflow-wrap: normal; white-space: nowrap; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .ticker__track { animation: none; }
