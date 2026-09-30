@@ -383,13 +383,15 @@ form.f {
   .name p { font-size: var(--sc-t-sm); }
   .peak-scrim { background: linear-gradient(to bottom, rgb(11 11 12 / 0.7), transparent 18%), linear-gradient(to top, rgb(11 11 12 / 0.96) 0%, rgb(11 11 12 / 0.9) 34%, rgb(11 11 12 / 0.55) 52%, transparent 68%); }
   .rooms ul { font-size: clamp(2.2rem, 11vw, 3rem); }
-  .listen { right: 0; top: calc(var(--ticker-h) + var(--bar-h) + 1.5rem); }
-  .listen .kicker, .listen__head, .crate__more { padding-right: var(--sc-gutter); }
-  .crate { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: var(--sc-4); padding: 4px var(--sc-gutter) 8px 0; scrollbar-width: none; overscroll-behavior-x: contain; }
-  .crate::-webkit-scrollbar { display: none; }
-  .rec { flex: 0 0 38vw; scroll-snap-align: start; }
-  .rec__disc { width: 100%; }
-  .crate__more { flex-direction: column; gap: 0; }
+  .listen { right: var(--sc-gutter); top: calc(var(--ticker-h) + var(--bar-h) + 1rem); }
+  /* phones: all ten records at once, four to a row, the last row centred */
+  .crate { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 10px; margin-top: var(--sc-4); }
+  .rec { flex: 0 0 calc((100% - 30px) / 4); text-align: center; }
+  .rec__disc { width: 100%; margin: 0 auto; }
+  .rec__t { margin-top: 6px; font-size: 0.68rem; line-height: 1.2; }
+  .rec__m { display: none; }
+  .crate__more { gap: var(--sc-5); margin-top: var(--sc-4); }
+  .crate__more a { font-size: 0.8rem; }
   .listen__head { font-size: var(--sc-t-lg); }
   .listen .body { font-size: var(--sc-t-sm); }
   .listen__links { margin-top: var(--sc-4); }
@@ -631,7 +633,7 @@ form.f {
     Array.prototype.forEach.call(twoLines ? nameEl.querySelectorAll('.l') : [nameEl], function (l) {
       var r = document.createRange(); r.selectNodeContents(l); bw = Math.max(bw, r.getBoundingClientRect().width);
     });
-    var maxW = vw * (small.matches ? 0.985 : 0.94);   // phones: edge to edge
+    var maxW = vw * (small.matches ? 0.88 : 0.94);    // phones: big, with a margin either side
     if (bw > maxW) { fs = fs * maxW / bw; nameEl.style.fontSize = fs + 'px'; }
     nameEl.style.top = (rect.y + (small.matches ? NAME_BOTTOM_PHONE : NAME_BOTTOM) * s - nameEl.offsetHeight) + 'px';
     // On one line, nudge left so the tall tower covers the edge of the last E,
